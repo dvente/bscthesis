@@ -1,5 +1,12 @@
 # Fdb version 3
-["pdflatex"] 1455622079 "thesis.tex" "thesis.pdf" "thesis" 1455622079
+["bibtex thesis"] 1455710531 "thesis.aux" "thesis.bbl" "thesis" 1455710539
+  "library.bib" 1455710285 1891 1380d7923a476e4c44b3f61354ed4101 ""
+  "thesis.aux" 1455710531 325 d34a7ad00790079f6149fbc1a4b7f3ba ""
+  "thesis.bcf" 0 -1 0 ""
+  (generated)
+  "thesis.bbl"
+  "thesis.blg"
+["pdflatex"] 1455710531 "thesis.tex" "thesis.pdf" "thesis" 1455710539
   "/etc/texmf/web2c/texmf.cnf" 1428265766 1101 af7716885e081ab43982cab7b4672c1a ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
@@ -51,12 +58,13 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1392645748 31083 1dfd8bf685ce0009c40532fedf8a7c53 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1428265897 1346346 7f2b8b715a9ddb095afe3697a6ba02b5 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1428265853 3822873 1008c20d1a7df950401020ee7f6366fb ""
-  "thesis.aux" 1455622079 285 1cedbdec4ccd3f0421e48e376183d7a0 ""
-  "thesis.tex" 1455622079 1526 8fd695f3e61a289596f8a44509d50455 ""
-  "thesis.toc" 1455622079 83 2cf89a8d21dc072854fb88cce154e977 ""
+  "thesis.aux" 1455710531 325 d34a7ad00790079f6149fbc1a4b7f3ba ""
+  "thesis.bbl" 1455710531 0 d41d8cd98f00b204e9800998ecf8427e "bibtex thesis"
+  "thesis.tex" 1455710529 1567 da0665721b0d369154df152d055d17c0 ""
+  "thesis.toc" 1455710531 83 2cf89a8d21dc072854fb88cce154e977 ""
   "uniLogo.pdf" 1455620344 311743 088a39fde2e691beee25689f735da549 ""
   (generated)
   "thesis.toc"
-  "thesis.aux"
   "thesis.pdf"
   "thesis.log"
+  "thesis.aux"

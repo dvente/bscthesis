@@ -100,6 +100,8 @@ INPUT thesis.toc
 INPUT thesis.toc
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
 OUTPUT thesis.toc
+INPUT thesis.bbl
+INPUT thesis.bbl
 INPUT thesis.aux
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
