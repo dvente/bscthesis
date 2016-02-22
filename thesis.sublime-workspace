@@ -523,9 +523,25 @@
 			"file": "thesis.tex",
 			"settings":
 			{
-				"buffer_size": 1526,
+				"buffer_size": 1567,
 				"line_ending": "Unix",
 				"name": "% ------------------------------------------------"
+			}
+		},
+		{
+			"file": "/home/dvente/.config/sublime-text-2/Packages/User/Default (Linux).sublime-keymap",
+			"settings":
+			{
+				"buffer_size": 90,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/dvente/.config/sublime-text-2/Packages/User/LaTeXTools.sublime-settings",
+			"settings":
+			{
+				"buffer_size": 6568,
+				"line_ending": "Unix"
 			}
 		}
 	],
@@ -597,6 +613,7 @@
 	},
 	"file_history":
 	[
+		"/home/dvente/.config/sublime-text-2/Packages/Default/Preferences.sublime-settings",
 		"/home/dvente/.config/sublime-text-2/Packages/User/Default (Linux).sublime-keymap",
 		"/home/dvente/Dropbox/Huiswerk/PT/pipeline/test.py",
 		"/home/dvente/Dropbox/Huiswerk/PT/pipeline/fork.py",
@@ -667,7 +684,6 @@
 		"/home/dvente/Dropbox/Huiswerk/Old/DS/ExpTree/expTree.cpp",
 		"/home/dvente/.config/sublime-text-2/Packages/User/JSON.sublime-settings",
 		"/home/dvente/.config/sublime-text-2/Packages/User/Preferences.sublime-settings",
-		"/home/dvente/.config/sublime-text-2/Packages/Default/Preferences.sublime-settings",
 		"/home/dvente/Dropbox/Portfolio/cv.tex",
 		"/usr/share/texlive/texmf-dist/tex/latex/fontspec/fontspec.sty",
 		"/home/dvente/Dropbox/Huiswerk/DS/ExpTree/tester.py",
@@ -742,6 +758,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"build",
 			"voorbeeld",
 			"gevolg",
 			"stelling",
@@ -868,8 +885,7 @@
 			"[j]",
 			"MAX_PART",
 			"float",
-			"numbf",
-			"explode"
+			"numbf"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -951,15 +967,15 @@
 					"file": "thesis.tex",
 					"settings":
 					{
-						"buffer_size": 1526,
+						"buffer_size": 1567,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1463,
-								1463
+								1527,
+								1527
 							]
 						],
 						"settings":
@@ -969,7 +985,60 @@
 							"syntax": "Packages/LaTeX/LaTeX.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 388.0,
+						"translation.y": 643.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/home/dvente/.config/sublime-text-2/Packages/User/Default (Linux).sublime-keymap",
+					"settings":
+					{
+						"buffer_size": 90,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/home/dvente/.config/sublime-text-2/Packages/User/LaTeXTools.sublime-settings",
+					"settings":
+					{
+						"buffer_size": 6568,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								22,
+								22
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1785.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

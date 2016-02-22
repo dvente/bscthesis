@@ -10,7 +10,7 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{amsfonts}
-
+\usepackage[square, numbers]{natbib}
 \usepackage{verbatim}
 \usepackage{float}
 \usepackage[margin=75pt]{geometry}
@@ -32,11 +32,12 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{example}[theorem]{Example}
 
+\bibliographystyle{plainnat}
 
 \begin{document}
 \vspace*{7em}
 \begin{center}
-{\large\bf D. Vente\par} \vspace{3em} {\LARGE\bf Squinting boosting algoritmes\par} \vspace{3em} {\large\bf
+{\large\bf D. Vente\par} \vspace{3em} {\LARGE\bf Squint-boosting algoritmes\par} \vspace{3em} {\large\bf
 Bachelor thesis\par} \vspace{1em} {\large\bf Thesis supervisor:
 Tim van Erven\par} \vspace{3em} {\large\bf Datum
 Bachelor exam: St. Juttemis\par}\vfill
@@ -45,15 +46,16 @@ Bachelor exam: St. Juttemis\par}\vfill
 {\large\bf Mathematical Institute, University Leiden}
 \end{center}
 
-\thispagestyle{empty} %zorgt ervoor dat de eerste pagina niet genummerd wordt.
+\thispagestyle{empty} 
 
 \newpage
 \tableofcontents
 \newpage
 
-\section{Introduction}
-\label{intro}
-\cite{Freund1997}
+\section{Motivation}
+\label{motiv}
+Just like the ever increasing complexity and ubiquity of technology so has both our demand and supply of data sky-rocketed. With the rise of data availability, time has become an evermore rare and valuable resource. Because of this dual relationship between time and data the demand for automatic decision making has earned more and more attention over the years. From financial predictions to recommendations of media to consume, our lives have become ever more dependant on automatic decision making. However computers have a big limitation, namely that they can only perform very specific set tasks. Tasks that might not only be hard to describe but we might not even know how to do. In this case machine learning could provide a solution. Efficient ways of teaching machines by example is not only very cost effective but can also trump traditional humans and even programmers in actual effectiveness. This makes developing ways of machine learning a very lucrative exercise in every since of the word. 
+
 
 
 \bibliography{library}
