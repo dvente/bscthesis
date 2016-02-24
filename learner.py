@@ -14,7 +14,7 @@ def learn(beta):
 
 if __name__ == '__main__':
 	pool = mult.Pool(processes=4)
-	data = pool.map(learn,np.arange(0.1,0.5,0.01))
+	data = pool.map(learn,np.arange(0.0001,0.5,0.000001))
 	beta, loss = zip(*data)
 	print beta[loss.index(min(loss))]
 
