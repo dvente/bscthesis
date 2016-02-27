@@ -10,4 +10,4 @@ for row in data:
 		row[10] = -1 
 
 D = pandas.DataFrame(data)
-D.to_csv("train.dat")
+D.to_csv("train.dat", index = False)
