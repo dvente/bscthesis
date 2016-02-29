@@ -1,9 +1,13 @@
 thesis.aux
 thesis.blg
+thesis.bbl
 thesis.fdb_latexmk
 thesis.fls
 thesis.log
 thesis.pdf
 thesis.sublime-workspace
+thesis.sublime-project
 thesis.synctex.gz
 thesis.toc
+generated/*
+thesis.bbl

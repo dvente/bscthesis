@@ -1,0 +1,47 @@
+% !TEX root = ../thesis.tex
+
+\usepackage[margin=75pt]{geometry}
+
+\usepackage[sort]{natbib}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\bibliographystyle{abbrv}
+
+
+
+
+% % Make the appearance of the chapter heads a bit more fancy.
+% % These definitions were adapted from `report.cls`.
+% \makeatletter
+% \renewcommand*{\@makechapterhead}[1]{%
+%   \vspace*{50\p@}%
+%   {\parindent \z@ \raggedright \normalfont
+%    \ifnum \c@secnumdepth >\m@ne
+%    {\large{\addfontfeature{Numbers = {Lining, Proportional}, LetterSpace = 40}CHAPTER\hspace{1.2em}\thechapter}}\\
+%    \fi
+%    \interlinepenalty\@M
+%    \Huge \bfseries #1\par\nobreak
+%    \vskip 40\p@
+% }}
+% \renewcommand*{\@makeschapterhead}[1]{%
+%   \vspace*{50\p@}%
+%   {\parindent \z@ \raggedright \normalfont
+%    {\large\phantom{Chapter}}
+%    \interlinepenalty\@M
+%    \Huge \bfseries #1\par\nobreak
+%    \vskip 40\p@
+% }}
+% \makeatother
