@@ -1,0 +1,50 @@
+%!TEX root = ../thesis.tex
+
+\chapter{Algorithms}
+\label{app:algo}
+
+\section{\hedge}
+\label{app:hedge}
+
+\begin{algorithm}
+\caption{\hedge}
+\begin{algorithmic}[1]
+\Require 
+\Statex $\beta\in [0,1]$
+\Statex Initial weight vector $\mathbf{w}^1\in [0,1]^N$ with $\sum_{i=1}^N \mathbf{w}^1_i=1$
+\Statex Number of trails $T$
+\Procedure{\textbf{Hedge}}{$\beta$}
+\For {$t= 1,2,\ldots,T$}
+\State Choose allocation $$\bf p^t= \frac{\bf w^t}{\sum_{i=1}^N \mathbf{w}^t_i}$$
+\State Receive loss vector $\ell^t\in[0,1]^N$
+\State Suffer loss $\bf p^t\cdot \ell^t$
+\State Update weights $$w^{t+1}_i=w^t_i\beta^{\ell_{i}^{t}}$$
+\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+\newpage
+\section{\adaB}
+\label{app:adaB}
+
+\begin{algorithm}
+\caption{\adaB}
+\begin{algorithmic}[1]
+\Require 
+\Statex $N$ labelded samples $\langle (x_1,y_1),\ldots,(x_N,y_N)\rangle$
+\Statex Distribution $D$ of the $N$ examples
+\Statex Weak learning algorithm $\weak$
+\Statex Number of trails $T$
+\Procedure{\textbf{AdaBoost}}{}
+\State \textbf{Initialize} the weight vector $w_i^1=D(i)$ for $i=1,\ldots,N$
+\For {$t= 1,2,\ldots,T$}
+\State Set $$\bf p^t= \frac{\bf w^t}{\sum_{i=1}^N \mathbf{w}^t_i}$$
+\State Call \weak($\bf p^t$) and receive hypothesis $h_t:X\to [0,1]$
+\State Calculate the error of $h_t:\ve_t=\sum^N_{i=0}p^t_i|h_t(x_i)-y_i|$
+\State Set $\b_t=\ve_t/(1-\ve_t)$
+\State Update the weights $$w^{t+1}_i=w^t_i\beta^{1-|h_t(x_i)-y_i|}_t$$
+\EndFor\\
+\Return $$h_f(x)=\begin{cases}1 & \text{if } \sum^T_{t=0}(\log1/\b_t)h_t(x)\geq\frac12\sum^T_{t=0}\log1/\b_t\\0&\text{otherwise}\end{cases}$$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}

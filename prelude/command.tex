@@ -10,13 +10,21 @@
 \usepackage{float}
 \usepackage{titlesec}
 \usepackage{color}
-
-
-
+\usepackage[toc,page]{appendix}
+%\usepackage{algorithmicx}
+%\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
 
 \newcommand{\hedge}{\textbf{Hedge}($\beta$) }
-\newcommand{\ada}{\textbf{AdaBoost}}
-\newcommand{\squint}{\textbf{Squint}}
+\newcommand{\adaB}{\textbf{AdaBoost} }
+\newcommand{\adaN}{\textbf{AdaNormalHedge} }
+\newcommand{\squint}{\textbf{Squint} }
+\newcommand{\weak}{\textbf{WeakLearn} }
+\renewcommand{\mark}[1]{\color{red} #1}
+\renewcommand{\bf}[1]{\mathbf{#1}}
+\newcommand{\ve}{\varepsilon}
+\renewcommand{\b}{\beta}
