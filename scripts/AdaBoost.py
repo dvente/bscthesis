@@ -43,7 +43,7 @@ class AdaBoost:
 		for t in range(0,self.T):
 			for i in range(0, self.N):
 
-				self.p[t][i] = float(self.w[t][i])/float(sum(self.w[t]))
+				self.p[t][i] = float(self.w[t][i])/max(float(sum(self.w[t])),0.00000000001)
 			#print(self.p[t].shape)	
 			
 			#print(self.p[t])
@@ -71,7 +71,7 @@ class AdaBoost:
 
 sumpErr = 0
 boostErr = 0
-a = AdaBoost(100, "../generated/train.dat", uniformDist)
+a = AdaBoost(200, "../generated/train.dat", uniformDist)
 s = DecisionTreeClassifier(max_depth = 1)
 s.fit(a.vec, a.label.reshape(-1,1))
 #for i in range(0,10000):
@@ -81,6 +81,9 @@ for t in range(0,1000):
  	true = (sum(map(lambda x: x**2, vec)) > 9.34)
  	boostErr += abs(a.finalHyp(vec)-true)
  	sumpErr += abs(s.predict(vec)-true)
+print("trails: 200")
+print("test cases: 1000")
+print("train cases: 1000")
 print("boostErr:" + str(boostErr))
 print("sumpErr:" + str(sumpErr))
 # print float(guess)/float(1000)
