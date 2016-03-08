@@ -1,10 +1,15 @@
+#!/usr/bin/python3
 import numpy as np
 import sys
+from sklearn.tree import DecisionTreeClassifier
 import pandas
-from sklearn.neighbors import KNeighborsClassifier
+
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 def uniformDist(N):
-	w = [1/float(N) for i in range(0,N)]
+	w = [float(1/N) for i in range(0,N)]
 	return w
 
 def readData(file):
@@ -14,22 +19,23 @@ def readData(file):
 	for line in f:
 		line = line.rstrip()
 		array = line.split(" ")
-		vec.append(map(float, array[:-2]))
+		vec.append(list(map(float, array[:-2])))
 		label.append(int(array[-1]))
 	
 	return (vec,label)
 
 class AdaBoost:
-	def __init__(self, T, data, dataDist, weakLearn):
+	def __init__(self, T, data, dataDist):
 		self.T = T
-		#self.data = 
-		self.vec, self.label = readData(data)#dataDist(len(data))
-		self.hyp = weakLearn
+		self.vec, self.label = readData(data)
+		self.vec = np.asarray(self.vec)
+		self.label = np.asarray(self.label)
 		self.N = len(self.vec)
 		self.err = [0 for i in range(0,self.T)]
 		self.w = [dataDist(len(self.vec)) for t in range(0,self.T+1)]
-		self.p = [[0 for i in range(0,self.N)] for j in range(0,self.T+1)]
-		self.beta = [0 for i in range(0,self.T)]
+		self.p = np.zeros((self.T,self.N))
+		self.beta = np.zeros(self.T)
+		self.weakLearn = [DecisionTreeClassifier(max_depth = 1) for i in range(0,self.T)]
 		self.train()
 
 
@@ -37,52 +43,43 @@ class AdaBoost:
 		for t in range(0,self.T):
 			for i in range(0, self.N):
 				self.p[t][i] = float(self.w[t][i])/float(sum(self.w[t]))
-				self.err[t] += self.p[t][i]*abs(self.hyp(self.vec[i])-self.label[i])
+			#print(self.p[t].shape)	
+			
+			#print(self.p[t])
+			self.weakLearn[t].fit(self.vec, self.label.reshape(-1,1), sample_weight=self.p[t])
+
+			for i in range(0, self.N):
+				self.err[t] += self.p[t][i]*abs(self.weakLearn[t].predict(self.vec[i])-self.label[i])
 
 			self.beta[t] = self.err[t]/float(1-self.err[t])
 
 			for i in range(0, self.N):#choose weights
-				self.w[t+1][i] = self.w[t][i]*pow(self.beta[t],1-abs(self.hyp(self.vec[i])-self.label[i]))
+				self.w[t+1][i] = self.w[t][i]*pow(self.beta[t],1-abs(self.weakLearn[t].predict(self.vec[i])-self.label[i]))
 
 	def finalHyp(self, vec):
 		height = 0
 		thresh = 0
 		for t in range(0,self.T):
-			height += (log(1/float(beta[t])))*self.hyp(vec)
-			thresh += (log(1/float(beta[t])))
+			height += (np.log(1/self.beta[t]))*self.weakLearn[t].predict(vec)
+			thresh += (np.log(1/self.beta[t]))
 		if height > 0.5*thresh:
 			return 1
 		else:
 			return 0
 
 
-# class weakLearn:
-# 	def __init__(self, data):
-# 		self.vec, self.label = readData(data)
-# 		self.kNN = KNeighborsClassifier(n_neighbors = 15, n_jobs = -1)
-# 		#print self.vec
-# 		#print self.label
-# 		self.kNN.fit(self.vec, self.label)
-
-# 	def algo(self, vec):
-# 		print np.random.normal(0,1,1)
-# 		return self.kNN.predict(vec)
-
-def stump(vec):
-	if sum(vec) > 9.34:
-		return 1
-	else:
-		return 0
-
-# true = (sum(map(lambda x: x**2, vec)) > 9.34)
-# guess = a.finalHyp(vec)
-# print guess
-# print true
-guess = 0
-a = AdaBoost(100, "train.dat", uniformDist, stump)
-for t in range(0,100):
- 	vec = np.random.normal(0,1,10).tolist()
-  	true = (sum(map(lambda x: x**2, vec)) > 9.34)
-  	guess += abs(a.finalHyp(vec)-true)
-print guess
+sumpErr = 0
+boostErr = 0
+a = AdaBoost(100, "../generated/train.dat", uniformDist)
+s = DecisionTreeClassifier(max_depth = 1)
+s.fit(s.vec, a.label.reshape(-1,1))
+#for i in range(0,10000):
+	
+for t in range(0,1000):
+ 	vec = np.random.normal(0,1,9).tolist()
+ 	true = (sum(map(lambda x: x**2, vec)) > 9.34)
+ 	boostErr += abs(a.finalHyp(vec)-true)
+ 	sumpErr += abs(s.predict(vec)-true)
+print("boostErr:" + str(boostErr))
+print("sumpErr:" + str(sumpErr))
 # print float(guess)/float(1000)

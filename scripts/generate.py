@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import numpy as np
 import random as rand
 import sys
@@ -12,7 +13,7 @@ for m in range(0,int(sys.argv[1])):
 
 	data.append(vec)
 
-with open(sys.argv[2],'w') as file:
+with open("../generated/" + sys.argv[2],'w') as file:
 	for i in data:
 		for j in i:
 			file.write(str(j)+" ")

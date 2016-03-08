@@ -2,7 +2,7 @@ import multiprocessing
 
 def worker(num):
     """thread worker function"""
-    print 'Worker:', num
+    print('Worker:', num)
     return
 
 if __name__ == '__main__':

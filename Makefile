@@ -5,7 +5,7 @@ all: $(FILE).pdf
 .PHONY: clean
 
 clean:
-	\rm $(FILE).aux $(FILE).blg $(FILE).bbl $(FILE).log $(FILE).synctex.gz $(FILE).toc
+	$(RM) $(FILE).aux $(FILE).blg $(FILE).bbl $(FILE).log $(FILE).synctex.gz $(FILE).toc
 
 $(FILE).pdf: 
 	$(FILE).tex
