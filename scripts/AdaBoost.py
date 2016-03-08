@@ -42,6 +42,7 @@ class AdaBoost:
 	def train(self):
 		for t in range(0,self.T):
 			for i in range(0, self.N):
+
 				self.p[t][i] = float(self.w[t][i])/float(sum(self.w[t]))
 			#print(self.p[t].shape)	
 			
@@ -72,7 +73,7 @@ sumpErr = 0
 boostErr = 0
 a = AdaBoost(100, "../generated/train.dat", uniformDist)
 s = DecisionTreeClassifier(max_depth = 1)
-s.fit(s.vec, a.label.reshape(-1,1))
+s.fit(a.vec, a.label.reshape(-1,1))
 #for i in range(0,10000):
 	
 for t in range(0,1000):
