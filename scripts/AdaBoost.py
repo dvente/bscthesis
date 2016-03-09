@@ -31,12 +31,16 @@ class AdaBoost:
 		self.vec = np.asarray(self.vec)
 		self.label = np.asarray(self.label)
 		self.N = len(self.vec)
-		self.err = [0 for i in range(0,self.T)]
+		self.err = np.zeros(self.T)#[0 for i in range(0,self.T)]
 		self.w = [dataDist(len(self.vec)) for t in range(0,self.T+1)]
 		self.p = np.zeros((self.T,self.N))
 		self.beta = np.zeros(self.T)
 		self.weakLearn = [DecisionTreeClassifier(max_depth = 1) for i in range(0,self.T)]
 		self.train()
+		self.thresh = 0
+		for t in range(0,self.T):
+			self.thresh += (np.log(1/self.beta[t]))
+		self.thresh *= 0.5
 
 
 	def train(self):
@@ -59,31 +63,31 @@ class AdaBoost:
 
 	def finalHyp(self, vec):
 		height = 0
-		thresh = 0
 		for t in range(0,self.T):
 			height += (np.log(1/self.beta[t]))*self.weakLearn[t].predict(vec)
-			thresh += (np.log(1/self.beta[t]))
-		if height > 0.5*thresh:
+			
+		if height > self.thresh:
 			return 1
 		else:
-			return 0
+			return -1
 
 
 sumpErr = 0
 boostErr = 0
-a = AdaBoost(200, "../generated/train.dat", uniformDist)
+test = 1000
+a = AdaBoost(int(sys.argv[1]), "../generated/train.dat", uniformDist)
 s = DecisionTreeClassifier(max_depth = 1)
 s.fit(a.vec, a.label.reshape(-1,1))
-#for i in range(0,10000):
 	
-for t in range(0,1000):
+for t in range(0,test):
  	vec = np.random.normal(0,1,9).tolist()
- 	true = (sum(map(lambda x: x**2, vec)) > 9.34)
+ 	true = (sum(list(map(lambda x: x**2, vec))) > 9.34)
  	boostErr += abs(a.finalHyp(vec)-true)
  	sumpErr += abs(s.predict(vec)-true)
-print("trails: 200")
-print("test cases: 1000")
-print("train cases: 1000")
+print()
+print("trails: " + sys.argv[1])
+print("test cases: " +str(test))
+print("train cases: " + str(a.N))
 print("boostErr:" + str(boostErr))
 print("sumpErr:" + str(sumpErr))
 # print float(guess)/float(1000)
