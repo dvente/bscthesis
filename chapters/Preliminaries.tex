@@ -2,18 +2,34 @@
 
 \chapter{Preliminaries}
 \label{chap:prelim}
-\section{Classification} 
-\label{sec:class}
-\todo[line]{Maybe integrate these sections in chapter one} In this thesis we will mostly be concerned with qualitative learning, often called \textit{classification}, which is as follows. \todo{reference to Hatsie here?} We have a, usual finite, set of labels called $Y=\set{y_1,\ldots y_n}$ and for a given input $X$ we are expected to pick one of the labels to attach to it. Going back to our spam example this would look like $Y=\set{spam, genuine}$. As with this example it is useful to note that these labels usually lack any kind of structure like a order or magnitude, even though they are usually labelled with numbers. In the case that we have only two labels we will usually take them to be 1 and -1, so in our spam example labelling a email as genuine would get attached a 1 and spam a -1. 
+\section{Setting and Notations}
+\subsection{Classification} 
+\label{subsec:class}
+\par \todo[line]{Maybe integrate these sections in chapter one} In this thesis we will mostly be concerned with qualitative learning, often called \textit{classification}\cite{Hastie2009}. We have a, usually finite, set of labels called $Y:=\set{y_1,\ldots y_n}$ and for a given input which we will denote by $X$ we are expected to pick one of the labels to attach to it. Going back to our spam example this would look like $Y=\set{spam, genuine}$. As with this example it is useful to note that these labels usually lack any kind of structure like a order or magnitude, even though they are usually labelled with numbers. In the case that we have only two labels they will often be labelled as 0 and 1 or 1 and -1. We will usually employ the latter notation, so in our spam example labelling a email as genuine would get attached a 1 and spam a -1. 
 
-\section{Boosting}
-\label{sec:boost}
-% \begin{wrapfigure}{r}{0.5\textwidth}
-%   \begin{center}
-%     \includegraphics[width=0.48\textwidth]{images/boosting.png}
-%   \end{center}
-%   \caption{An illustration of the boosting process\cite{Hastie2009}}
-%   \label{im:boost}
-% \end{wrapfigure}   
-% \todo{reproduce picture using my own notation}
-Let us give a more detailed description of the process of boosting. Firstly we require a set of training data we will call $T$ and a weak \todo{should I introduce weaklearn again because maybe people haven't read the full introduction?}learning algorithm called \weak. The procedure is to fit \weak on our training data which produces a hypothesis $h_t:X\to Y$. When we receive the hypothesis we also receive a loss vector. This loss vector is a measure for how well we have done and is usually the error of \weak on the training set. Using this received loss vector we will slightly alter the training set by attaching weights to them, which measure their importance and then repeat the process. 
+\par We will use upper case letters to denote generic instances of a variable while observed instances will be denoted by lower case letters. If these instances are vectors we will denote their components by subscripts as such: $X_j$. This means that $x_i$ is the $i$th instance of an observed input variable $X$ which might again be a vector or not and $y_i$ it's label, which may or may not be known.  Predictions will be denoted by $\hat Y$, so in the case we have a hypothesis $h_t:X\to Y$ we will define $\hat{y_i}:=h_t(x_i)$.  
+
+\subsection{Weak learning}
+\label{subsec:weak}
+In this thesis we will often refer to a class of algorithms called \textit{weak probably approximately correct(PAC) learning algorithms}\cite{Freund1997}. For convenience sake these algorithms will simply be referred to as ``weak learners'', and we will use \weak to denote a generic weak learning algorithm. These algorithm must satisfy the following conditions. Given some $\delta,\gamma >0$ and access to enough examples these algorithms must output a hypothesis that has error at most $\ve \leq \frac12-\gamma$, with probability $1-\delta$. This means that the algorithm must, with a certain probability(the P in PAC), provide a hypothesis that performs at least slightly better than random guessing(the AC in PAC). 
+
+\par In this thesis this role will mostly be fulilled what we call \textit{decision stumps}. These are decision trees of depth one. These usually operate in the following matter. Given an input vector $X$ the stump will attempt to find a optimal $t$ and $i$ such that the hypothesis $h_t:X\to Y$ given by $$h_t(x):=\begin{cases}1 &x_i\leq t \\ -1 &\text{otherwise}\end{cases}$$ has minimal error on our (weighted) training set. Here we have chosen to check whether $x_i\leq t$ instead of $x_i\geq t$ but this is another choice the stump can optimize for. 
+
+\subsection{Boosting}
+\label{subsec:boost}
+
+Let us give a more detailed description of the process of boosting. Firstly we require a set of training data and one weak learning algorithm \weak. Often a boosting algorithm will also accept a distribution $D$ on the training data to exploit any prior knowledge which will be set to uniform if no prior knowledge is provided. The procedure is to fit \weak on our training data which produces a hypothesis $h_t:X\to Y$. Using this hypothesis we will either receive or calculate a loss vector. This loss vector is a measure for how well we have done and is usually the error of \weak on the training set. Using this loss vector we will slightly alter the training set by attaching weights to them, which measure their importance and then repeat the process. This will give us a sequence of hypotheses which increasingly focus on the relevant examples. 
+
+\section{AdaBoost}
+\label{sec:ada}
+\subsection{The algorithm}
+\label{subsec:algo}
+We will now give a formal discussion of the \adaB\cite{Freund1997} algorithm, which can be found in the appendix \ref{app:adaB}. The goal of the algorithm is to minimize the error with the respect to the distribution $D$ over the training data. One should note there that $D$ is initially provided to the learner but after that the learner can manipulate $D$ itself to minimize the error. In the first step the learner will obtain a new distribution by normalizing the weights from the previous step, or the initial distribution. This distribution will then be provided to \weak which will form a hypothesis accordingly. When the hypothesis is formulated the learner will calculate it's error and set the parameter $\beta$, which can be interpreted as the learning speed. In the final step the learner will update the weights appropriately. It is important to observe that \weak produces a hypothesis at every iteration and that the finial hypothesis is essentially a majority vote among all of these hypothesis. The reader might find it odd that all of these hypothesis are allowed to contribute to the final answer with equal weight. This will be addressed somewhat in the next section.  
+
+\subsection{The performance of \adaB}
+\label{subsec:perf}
+Here we will discuss the theoretical performance of \adaB and one of the main results from \todo[line]{how to use citations in a sentence?}\cite{Freund1997}, which is the following theorem: 
+\begin{theorem}\label{thm:adaErr}\cite{Freund1997}
+Suppose the weak learning algorithm \weak when called by \adaB generates hypotheses with erros $\ve_1\ldots, \ve_T$ (as defined in step 3 in \ref{app:adaB}). Then the error \\$\ve:=\Pr_{i\sim D}[h_f(x_i)\neq y_i]$ of the final hypothesis $h_f$ output by \adaB is bounded above by $$\ve\leq 2^T\prod^T_{t=1}\sqrt{\ve_t(1-\ve_t)}$$
+\end{theorem}
+We will omit the proof since it is not the focus of this thesis but we will briefly discuss it's consequences. As discussed above one might find it strange that every hypothesis is allowed a vote in the final hypothesis. This is still, however, an improvement over previous algorithms since the final error will now depend on the error of all hypothesis instead of just the worst as was the case in previous works. 

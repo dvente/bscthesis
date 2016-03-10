@@ -1,0 +1,12 @@
+boostErr:5
+sumpErr:[13]
+
+real	0m5.143s
+user	0m5.039s
+sys	0m0.108s
+boostErr:1
+sumpErr:[11]
+
+real	0m5.056s
+user	0m5.001s
+sys	0m0.059s
