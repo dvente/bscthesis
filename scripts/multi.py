@@ -1,14 +1,14 @@
 import multiprocessing
+import subprocess
 
-def worker(num):
-    """thread worker function"""
-    print('Worker:', num)
-    return
+def work(N):
+    return subprocess.call(['python3.4 skAdaBoost.py ' + str(N)], shell=True)
 
 if __name__ == '__main__':
-    jobs = []
-    for i in range(5):
-        p = multiprocessing.Process(target=worker, args=(i,))
-        jobs.append(p)
-        p.start()
-    
+    pool = multiprocessing.Pool(None)
+    tasks = range(0,100)
+    results = []
+    r = pool.map(work, tasks, callback=results.append)
+    r.wait() # Wait on the results
+    print(results)
+    subprocess.call(['pushover --api-token aqz4SVrrb5a67EwnytQvmfnrYUnifw --user-key uUNPbABuEqPWvR5Y9agZeB59ZiMkqo "Your script is done"'], shell=True)

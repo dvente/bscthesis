@@ -12,7 +12,7 @@
 \Require 
 \Statex $\beta\in [0,1]$
 \Statex Initial weight vector $\mathbf{w}^1\in [0,1]^N$ with $\sum_{i=1}^N \mathbf{w}^1_i=1$
-\Statex Number of trails $T$
+\Statex Number of trials $T$
 \Procedure{\textbf{Hedge}}{$\beta$}
 \For {$t= 1,2,\ldots,T$}
 \State Choose allocation $$\bf p^t= \frac{\bf w^t}{\sum_{i=1}^N \mathbf{w}^t_i}$$
@@ -31,10 +31,10 @@
 \caption{\adaB}
 \begin{algorithmic}[1]
 \Require 
-\Statex $N$ labelded samples $\langle (x_1,y_1),\ldots,(x_N,y_N)\rangle$
+\Statex $N$ labelled samples $\langle (x_1,y_1),\ldots,(x_N,y_N)\rangle$
 \Statex Distribution $D$ over the $N$ examples
 \Statex Weak learning algorithm $\weak$
-\Statex Number of trails $T$
+\Statex Number of trials $T$
 \Procedure{\textbf{AdaBoost}}{}
 \State \textbf{Initialize} the weight vector $w_i^1=D(i)$ for $i=1,\ldots,N$
 \For {$t= 1,2,\ldots,T$}
