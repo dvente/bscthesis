@@ -15,7 +15,7 @@ def readData(file):
 	for line in f:
 		line = line.rstrip()
 		array = line.split(" ")
-		vec.append(list(map(float, array[:-2])))
+		vec.append(list(map(float, array[:-1])))
 		label.append(int(array[-1]))
 	
 	return (vec,label)
@@ -29,7 +29,7 @@ bdt.fit(vec, label)
 
 sumpErr = 0
 boostErr = 0
-test = 1000
+test = 10000
 #a = AdaBoost(int(sys.argv[1]), "../generated/train.dat", uniformDist)
 # s = DecisionTreeClassifier(max_depth = 1)
 # s.fit(vec, label)
@@ -54,7 +54,7 @@ def conv(inp):
 		return [-1]
 
 for t in range(0,test):
-	vec = np.random.normal(0,1,9).tolist()
+	vec = np.random.normal(0,1,10).tolist()
 	true = conv((sum(map(lambda x: x**2, vec)) > 9.34))
 #	print(true, bdt.predict(vec))
 	if bdt.predict(vec) != true:

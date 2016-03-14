@@ -19,9 +19,9 @@ def readData(file):
 	for line in f:
 		line = line.rstrip()
 		array = line.split(" ")
-		vec.append(list(map(float, array[:-2])))
+		vec.append(list(map(float, array[:-1])))
 		label.append(int(array[-1]))
-	
+
 	return (vec,label)
 
 class AdaBoost:
@@ -65,21 +65,21 @@ def conv(inp):
 
 # #stumpErr = 0
 boostErr = 0
-test = 5000
+test = 10000
 a = AdaBoost(int(sys.argv[1]), "../generated/train.dat", uniformDist)
 a.fit()
 
 
 	
 for t in range(0,test):
-	vec = np.random.normal(0,1,9).tolist()
-	print(vec)
-	print(list(map(lambda x: x**2, vec)))
-	print(sum(list(map(lambda x: x**2, vec))))
+	vec = np.random.normal(0,1,10).tolist()
+	#print(vec)
+	#print(list(map(lambda x: x**2, vec)))
+	#print(sum(list(map(lambda x: x**2, vec))))
 	true = conv((sum(map(lambda x: x**2, vec)) > 9.34))
 	if a.predict(vec) != true:
 		boostErr += 1
-	print(a.predict(vec), conv(true))
+	#print(a.predict(vec), conv(true))
 
 
 

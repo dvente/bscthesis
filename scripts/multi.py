@@ -6,9 +6,9 @@ def work(N):
 
 if __name__ == '__main__':
     pool = multiprocessing.Pool(None)
-    tasks = range(0,100)
+    tasks = range(1,100)
     results = []
-    r = pool.map(work, tasks, callback=results.append)
+    r = pool.map_async(work, tasks, callback=results.append)
     r.wait() # Wait on the results
     print(results)
     subprocess.call(['pushover --api-token aqz4SVrrb5a67EwnytQvmfnrYUnifw --user-key uUNPbABuEqPWvR5Y9agZeB59ZiMkqo "Your script is done"'], shell=True)
