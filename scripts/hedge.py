@@ -17,8 +17,6 @@ def isDist(w):
 class hedgeL:
 
 	def __init__(self, T, w, loss, beta = None):
-		
-		#self.loss = loss
 		self.T = T
 		self.N = len(w) 
 		self.loss = loss

@@ -9,11 +9,11 @@ for m in range(0,int(sys.argv[1])):
 	if sum(map(lambda x: x**2, vec)) > 9.34:
 		vec.append(1)
 	else:
-		vec.append(-1)
+		vec.append(0)
 
 	data.append(vec)
 
-with open("../generated/" + sys.argv[2],'w') as file:
+with open(sys.argv[2],'w') as file:
 	for i in data:
 		for j in i:
 			file.write(str(j)+" ")

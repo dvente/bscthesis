@@ -15,10 +15,11 @@ def readData(file):
 
 	return (bin,err)
 
-bin, err = readData("../generated/" + sys.argv[1])
+bin, err = readData(sys.argv[1])
 
 
 plt.plot(bin, err)
+plt.savefig(sys.argv[1][:-4]+".png")
 # plt.xlabel('Smarts')
 # plt.ylabel('Probability')
 # plt.title(r'Histogram of IQ: $\mu=100$, $\sigma=15$')

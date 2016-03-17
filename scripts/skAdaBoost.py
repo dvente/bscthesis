@@ -8,6 +8,9 @@ import pandas
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+def isDist(array):
+	return (array>=0 and sum(array)==1)
+
 def readData(file):
 	vec = []
 	label = []

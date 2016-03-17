@@ -5,10 +5,13 @@ thesis.fdb_latexmk
 thesis.fls
 thesis.log
 thesis.pdf
-thesis.sublime-workspace
-thesis.sublime-project
+*.sublime-workspace
+*.sublime-project
 thesis.synctex.gz
 thesis.toc
 generated/*
 thesis.bbl
 *.aux
+*.log
+*.dat
+*.png
