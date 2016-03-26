@@ -3,6 +3,10 @@ import numpy as np
 import random as rand
 import sys
 
+#python generate.py <number of cases> <file name>
+
+
+
 data = []
 for m in range(0,int(sys.argv[1])):
 	vec = np.random.normal(0,1,10).tolist()
@@ -13,7 +17,8 @@ for m in range(0,int(sys.argv[1])):
 
 	data.append(vec)
 
-with open(sys.argv[2],'w') as file:
+with open("../generated/"+ sys.argv[2],'w') as file:
+	file.write(str(sys.argv[1])+"\n")
 	for i in data:
 		for j in i:
 			file.write(str(j)+" ")

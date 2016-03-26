@@ -10,9 +10,7 @@ thesis.pdf
 thesis.synctex.gz
 thesis.toc
 generated/*
-images/*
 thesis.bbl
-thesis.tdo
 *.aux
 *.log
 *.dat

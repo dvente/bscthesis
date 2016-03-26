@@ -3,6 +3,8 @@ import numpy as np
 import sys
 from sklearn.tree import DecisionTreeClassifier
 
+#python AdaBoost.py <number of trails> <number of test cases>
+
 def isDist(array):
 	return (sum(list(map(lambda x: x<0,array)))==0 and np.isclose(sum(array),1.0))
 
@@ -17,6 +19,8 @@ def readData(file):
 	for line in f:
 		line = line.rstrip()
 		array = line.split(" ")
+		if(len(array) == 1):
+			continue
 		vec.append(list(map(float, array[:-1])))
 		label.append(int(array[-1]))
 
@@ -45,9 +49,9 @@ class AdaBoost:
 				raise ValueError("Non distribution found")
 				
 			self.weakLearn[t].fit(self.vec, self.label.reshape(-1,1), sample_weight=self.p)#fit weakLearn with dist
-		#print(self.weakLearn[t].predict(self.vec))
+
 			self.err = sum(np.multiply(self.p,abs(self.weakLearn[t].predict(self.vec)-self.label)))#calc err on training set
-		#	print(self.err)
+
 			self.beta[t] = self.err/(1-self.err)#set beta
 			
 			self.w = np.multiply(self.w,pow(self.beta[t], 1-abs(self.weakLearn[t].predict(self.vec)-self.label)))#update weights
@@ -69,10 +73,10 @@ def conv(inp):
 	else:
 		return 0
 
-# #stumpErr = 0
-test = 10000
+
+test = int(sys.argv[2])
 boostErr = 0
-a = AdaBoost(int(sys.argv[1]), "train.dat", uniformDist)
+a = AdaBoost(int(sys.argv[1]), "../generated/train.dat", uniformDist)
 a.fit()
 
 s = DecisionTreeClassifier(max_depth = 1)

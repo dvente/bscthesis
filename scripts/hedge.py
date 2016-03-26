@@ -1,4 +1,5 @@
 import numpy as np
+import heapq as heap
 import random as rand
 import string
 
@@ -54,3 +55,16 @@ def kPredict(N):
 choices =[(letter,rand.randint(1,5)) for letter in list(string.ascii_uppercase)[0:10]]
 choices[0] = ('A', 20)
 population = [val for val, cnt in choices for i in range(cnt)]
+
+
+h = hedgeL(50, uniformDist(24), kPredict)
+h.train()
+print(h.cumLoss,h.beta, -1*np.log(h.beta))
+
+loss=[]
+for i in np.arange(0.1,1,0.00002):
+	h = hedgeL(50, uniformDist(24), kPredict, i)
+	h.train()
+	heap.heappush(loss, (h.cumLoss, h.beta))
+print(loss[0], -1*np.log(loss[0]))
+	
