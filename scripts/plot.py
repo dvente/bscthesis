@@ -19,11 +19,7 @@ bin, err = readData(sys.argv[1])
 
 
 plt.plot(bin, err)
+plt.axhline(y=float(" 0.4602"), xmin=0, xmax=1, hold=None, ls='dashed')
 plt.savefig(sys.argv[1][:-4]+".png")
-# plt.xlabel('Smarts')
-# plt.ylabel('Probability')
-# plt.title(r'Histogram of IQ: $\mu=100$, $\sigma=15$')
-
-# Tweak spacing to prevent clipping of ylabel
 plt.subplots_adjust(left=0.15)
 plt.show()

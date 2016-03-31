@@ -37,5 +37,8 @@ We will omit the proof since it is not the focus of this thesis but we will brie
 
 \subsection{The practical performance of \adaB}
 \label{subsec:pracPerf}
-
+In an attempt to demonstrate the practical performance we recreated the following situation from \cite{Hastie2009}. We have ten features $X_1,\ldots,X_{10}$ which are drawn from a standard independent Gaussian. Their label is determined (deterministically) by the following rule: $$Y:=\begin{cases}
+1 & \sum_{k=0}^{10} X^2_k > \chi_{10}^2(0.5)\\
+0 & \text{otherwise}
+\end{cases}$$ Where $\chi_{10}^2(0.5)=9.34$. 
 \todo{add section on the practical performance of \adaB, insert picture}
