@@ -1,5 +1,5 @@
 import numpy as np
-import sys
+import argparse
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 
@@ -15,11 +15,13 @@ def readData(file):
 
 	return (bin,err)
 
-bin, err = readData(sys.argv[1])
+parser = argparse.ArgumentParser(description='Plot data from a two column .csv or .log file')
+parser.add_argument('file', help='location of the data to plot')
+args = parser.parse_args()
 
+bin, err = readData(args.file)
 
 plt.plot(bin, err)
-plt.axhline(y=float(" 0.4602"), xmin=0, xmax=1, hold=None, ls='dashed')
-plt.savefig(sys.argv[1][:-4]+".png")
+plt.savefig(args.file[:-4]+".png")
 plt.subplots_adjust(left=0.15)
 plt.show()

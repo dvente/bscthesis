@@ -1,9 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.4
 import numpy as np
 import sys
 from sklearn.tree import DecisionTreeClassifier
+import argparse
 
-#python AdaBoost.py <number of trails> <number of test cases>
 
 def isDist(array):
 	return (sum(list(map(lambda x: x<0,array)))==0 and np.isclose(sum(array),1.0))
@@ -19,7 +19,7 @@ def readData(file):
 	for line in f:
 		line = line.rstrip()
 		array = line.split(" ")
-		if(len(array) == 1):
+		if(len(array) == 1): #skip header row
 			continue
 		vec.append(list(map(float, array[:-1])))
 		label.append(int(array[-1]))
@@ -73,21 +73,27 @@ def conv(inp):
 	else:
 		return 0
 
+parser = argparse.ArgumentParser(description='AdaBoost trainer')
+parser.add_argument('trails', metavar = 'T', type = int, help='Number of trails to train AdaBoost with')
+parser.add_argument('--trainData', default = "../generated/train.dat",help="location of the training data")
+parser.add_argument("--testData", default = "../generated/test.dat", help = "location of the test data" )
+parser.add_argument("-v", "--verbose", help="display number of traing and test cases aswell", action="store_true")
 
-test = int(sys.argv[2])
+args = parser.parse_args()
+
 boostErr = 0
-a = AdaBoost(int(sys.argv[1]), "../generated/train.dat", uniformDist)
+a = AdaBoost(args.trails, args.trainData, uniformDist)
 a.fit()
 
-s = DecisionTreeClassifier(max_depth = 1)
-s.fit(a.vec, a.label, sample_weight = a.p)
-
-
-for t in range(0,test):
-	vec = np.random.normal(0,1,10)
-	true = conv((sum(map(lambda x: x**2, vec)) > 9.34))
-	if a.predict(vec) != true:
+testVec, testLabel = readData(args.testData);
+testVec = np.array(testVec)
+testLabel = np.array(testLabel)
+for t in range(0,len(testVec)):
+	if(a.predict(testVec[t].reshape(1,-1)) != testLabel[t]):
 		boostErr += 1
 
-print( sys.argv[1], boostErr/test) 	
+if(args.verbose):
+	print(a.N, len(testVec), args.trails, boostErr/len(testVec) )
+else:
+	print( args.trails, boostErr/len(testVec)) 	
 

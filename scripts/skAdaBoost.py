@@ -2,11 +2,7 @@
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 import numpy as np
-import sys
-import pandas
-
-import warnings
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+import argparse
 
 def isDist(array):
 	return (array>=0 and sum(array)==1)
@@ -18,51 +14,40 @@ def readData(file):
 	for line in f:
 		line = line.rstrip()
 		array = line.split(" ")
+		if(len(array) == 1):
+			continue
 		vec.append(list(map(float, array[:-1])))
 		label.append(int(array[-1]))
 	
 	return (vec,label)
 
-vec, label = readData("../generated/train.dat")
+parser = argparse.ArgumentParser(description='AdaBoost trainer using the Scikit-learn implementation')
+parser.add_argument('trails', metavar = 'T', type = int, help='Number of trails to train AdaBoost with')
+parser.add_argument('--trainData', default = "../generated/train.dat",help="location of the training data")
+parser.add_argument("--testData", default = "../generated/test.dat", help = "location of the test data" )
+parser.add_argument("-v", "--verbose", help="display number of traing and test cases aswell", action="store_true")
+
+args = parser.parse_args()
+
+boostErr = 0
+
+testVec, testLabel = readData(args.testData);
+testVec = np.array(testVec)
+testLabel = np.array(testLabel).reshape(-1,1)
+
+vec, label = readData(args.trainData)
+vec = np.array(vec)
+label = np.array(label)
 
 # Create and fit an AdaBoosted decision tree
-bdt = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1), n_estimators=int(sys.argv[1]))
+bdt = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1), n_estimators=args.trails)
 bdt.fit(vec, label)
-
-
-sumpErr = 0
-boostErr = 0
-test = 10000
-#a = AdaBoost(int(sys.argv[1]), "../generated/train.dat", uniformDist)
-# s = DecisionTreeClassifier(max_depth = 1)
-# s.fit(vec, label)
-	
-# for t in range(0,test):
-#  	inp = np.random.normal(0,1,9).tolist()
-#  	true = (sum(list(map(lambda x: x**2, inp))) > 9.34)
-#  	boostErr += abs(bdt.predict(inp)-true)
-#  	sumpErr += abs(s.predict(inp)-true)
-# print()
-# print("trails: " + sys.argv[1])
-# print("test cases: " +str(test))
-# print("train cases: " + str(len(vec)))
-# print("boostErr:" + str(boostErr))
-# print("sumpErr:" + str(sumpErr))
-# print float(guess)/float(1000)
-
-def conv(inp):
-	if inp:
-		return [1]
-	else:
-		return [-1]
-
-for t in range(0,test):
-	vec = np.random.normal(0,1,10).tolist()
-	true = conv((sum(map(lambda x: x**2, vec)) > 9.34))
-#	print(true, bdt.predict(vec))
-	if bdt.predict(vec) != true:
-# 		print(a.predict(vec))
+for t in range(0,len(testVec)):
+	if(bdt.predict(testVec[t].reshape(1,-1)) != testLabel[t]):
 		boostErr += 1
 
+if(args.verbose):
+	print(bdt.N, len(testVec), args.trails, boostErr/len(testVec) )
+else:
+	print(args.trails, boostErr/len(testVec)) 	
 
-print( sys.argv[1], boostErr/test ) 
