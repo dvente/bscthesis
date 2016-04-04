@@ -4,7 +4,7 @@ import sys
 import bisect as bc
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas
+import argparse
 
 #python multi.py <test trails> <plot file name>
 
@@ -22,7 +22,7 @@ def proces(output, target):
 
 if __name__ == '__main__':
 	pool = multiprocessing.Pool(None)
-	tasks = range(1,500)
+	tasks = range(1,100)
 	results = []
 	r = pool.map_async(work, tasks, callback=lambda x:proces(x, results))
 	r.wait() # Wait on the results
