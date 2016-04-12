@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.4
 import numpy as np
 import sys
 from sklearn.tree import DecisionTreeClassifier
