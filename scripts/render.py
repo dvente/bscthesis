@@ -36,7 +36,7 @@ def proces(output, target):
 
 if __name__ == '__main__':
 	pool = multiprocessing.Pool(None)
-	tasks = range(1,args.range,2)
+	tasks = range(1,args.range)
 	results = []
 	r = pool.map_async(work, tasks, callback=lambda x:proces(x, results))
 	r.wait() # Wait on the results
@@ -63,7 +63,6 @@ if __name__ == '__main__':
 
 		plt.axhline(y=float(stumpAns[1]), xmin = 0, xmax = 1, hold = None, ls = 'dashed')
 		plt.axhline(y=float(treeAns[1]), xmin = 0, xmax = 1, hold = None, ls = 'dashed')
-		#plt.axvline(y=float(treeAns[1]))
 		plt.text(len(err)//2,float(treeAns[1])+0.001,'Decision tree with ' + treeAns[0] + ' nodes',color='b')
 		plt.text(len(err)//2,float(stumpAns[1])+0.001,'Decision stump',color='b')
 		#print(M//2)
@@ -78,7 +77,9 @@ if __name__ == '__main__':
 		plt.subplots_adjust(left = 0.15)
 		
 		plt.plot(bins, err, color='r')
-		plt.savefig("../generated/" +  args.plot +".png")
+		plt.grid()
+		if(args.plot):
+			plt.savefig("../generated/" +  args.plot +".png")
 		if(args.notify):
 			subprocess.call(['pushover --api-token aqz4SVrrb5a67EwnytQvmfnrYUnifw --user-key uUNPbABuEqPWvR5Y9agZeB59ZiMkqo "Your script is done"'], shell=True)
 		if(args.show):

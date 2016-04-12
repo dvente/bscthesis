@@ -60,10 +60,12 @@ class NHBoostDT:
 			self.s[t] = self.s[t-1]+0.5*self.label*self.weakLearn[t].predict(self.vec)-self.gamma
 
 	def predict(self,vec):
-		ans = np.sign(sum([self.weakLearn[t].predict(vec) for t in range(1,self.T)]))
+		predict = [self.weakLearn[t].predict(vec) for t in range(1,self.T)]
+		ans = sum(predict)
 		if (ans == [0]):
-			print ([self.weakLearn[t].predict(vec) for t in range(1,self.T)])
-		return ans
+			return np.sign(ans + predict[1])#remove first predictor to break the tie
+		else:
+			return np.sign(ans)
 
 parser = argparse.ArgumentParser(description='NHBoostDT trainer')
 parser.add_argument('trails', metavar = 'T', type = int, help='Number of trails to train NHBoostDT with')
