@@ -6,6 +6,7 @@
 \section{\hedge}
 \label{app:hedge}
 
+\todo{Ik heb hier en daar een operatie op $\forall i$ veranderd in een vector notatie(vb in stap 6 van \hedge, dat vond ik zelf wat fijner lezen. Ook heb ik op een plekken vb $h_t$ naar $h^t$ veranderd om consistent te blijven}
 \begin{algorithm}
 \caption{\hedge}
 \begin{algorithmic}[1]
@@ -15,10 +16,10 @@
 \Statex Number of trials $T$
 \Procedure{\textbf{Hedge}}{$\beta$}
 \For {$t= 1,2,\ldots,T$}
-\State Choose allocation $$\bf p^t= \frac{\bf w^t}{\sum_{i=1}^N \mathbf{w}^t_i}$$
+\State Choose allocation $$\bf p^t= \frac{\bf w^t}{\sum_{i=1}^N w^t_i}$$
 \State Receive loss vector $\ell^t\in[0,1]^N$
 \State Suffer loss $\bf p^t\cdot \ell^t$
-\State Update weights $$w^{t+1}_i=w^t_i\beta^{\ell_{i}^{t}}$$
+\State Update weights $$\mathbf{w}^{t+1}=\mathbf{w}^t\beta^{\ell_{i}^{t}}$$
 \EndFor
 \EndProcedure
 \end{algorithmic}
@@ -31,20 +32,42 @@
 \caption{\adaB}
 \begin{algorithmic}[1]
 \Require 
-\Statex $N$ labelled samples $\langle (x_1,y_1),\ldots,(x_N,y_N)\rangle$
+\Statex $N$ labelled samples $\langle (\mathbf x_1,y_1),\ldots,(\mathbf x_N,y_N)\rangle$
 \Statex Distribution $D$ over the $N$ examples
 \Statex Weak learning algorithm $\weak$
 \Statex Number of trials $T$
 \Procedure{\textbf{AdaBoost}}{}
 \State \textbf{Initialize} the weight vector $w_i^1=D(i)$ for $i=1,\ldots,N$
 \For {$t= 1,2,\ldots,T$}
-\State Set $$\bf p^t= \frac{\bf w^t}{\sum_{i=1}^N \mathbf{w}^t_i}$$
-\State Call \weak($\bf p^t$) and receive hypothesis $h_t:X\to [0,1]$
-\State Calculate the error of $h_t:\ve_t=\sum^N_{i=0}p^t_i|h_t(x_i)-y_i|$
-\State Set $\b_t=\ve_t/(1-\ve_t)$
-\State Update the weights $$w^{t+1}_i=w^t_i\beta^{1-|h_t(x_i)-y_i|}_t$$
+\State Set $$\bf p^t= \frac{\bf w^t}{\sum_{i=1}^N w^t_i}$$
+\State Call \weak($\bf p^t$) and receive hypothesis $h^t:X\to [0,1]$
+\State Calculate the error of $h^t:\ve^t=\sum^N_{i=0}p^t_i|h^t(\mathbf x_i)-y_i|$
+\State Set $\b_t=\ve^t/(1-\ve^t)$
+\State Update the weights $$\mathbf{w}^{t+1}=\mathbf{w}^t\beta^{1-|h^t(x_i)-y_i|}_t$$
 \EndFor\\
-\Return $$h_f(x)=\begin{cases}1 & \text{if } \sum^T_{t=0}(\log1/\b_t)h_t(x)\geq\frac12\sum^T_{t=0}\log1/\b_t\\0&\text{otherwise}\end{cases}$$
+\Return $$h_f(\mathbf x)=\begin{cases}1 & \text{if } \sum^T_{t=0}(\log1/\b_t)h^t(\mathbf x)\geq\frac12\sum^T_{t=0}\log1/\b_t\\0&\text{otherwise}\end{cases}$$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\newpage
+\section{\adaN}
+\label{app:adaN}
+\begin{algorithm} 
+\caption{\adaN}
+\begin{algorithmic}[1]
+\Require 
+\Statex $N$ labelled samples $\langle (\mathbf x_1,y_1),\ldots,(\mathbf x_N,y_N)\rangle$ with $y_i\in\set{-1,+1}$
+\Statex Weak learning algorithm $\weak$
+\Statex Number of trials $T$
+\Procedure{\adaN}{}
+\State \textbf{Initialize} $\mathbf{s}_0 = \mathbf 0$
+\For {$t= 1,2,\ldots,T$}
+\State Set: $\mathbf p^t \propto \exp([\mathbf s^{t-1}-1]_-^2/3t) - \exp([\mathbf s^{t-1}+1]_-^2/3t) $ 
+\State Call $\weak(\mathbf p^t)$ and get hypothesis $h^t$ with edge $\gamma^t = \frac12\sum_ip^t_iy_ih^t(\mathbf x_i)$
+\State Set: $\mathbf s^t = \mathbf s^{t-1} + \frac12 y_ih^t(\mathbf x_i)-\gamma^t$
+\EndFor\\
+\Return $H(\mathbf x) = \sign\lubke{\sum^T_{t=1}h^t(\mathbf{x})}$
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}

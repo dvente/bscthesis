@@ -1,3 +1,3 @@
-\contentsline {todo}{Maybe integrate these sections in chapter one}{3}
-\contentsline {todo}{correct notation? $R_A$}{4}
-\contentsline {todo}{how to use citations in a sentence?}{4}
+\contentsline {todo}{Denk je dat ik hier en in de appendices de $\beta $ al moet vertalen naar een $\eta $ of zal ik eerst trouw aan de literatuur blijven en later overstappen?}{3}
+\contentsline {todo}{Mocht er genoeg tijd zijn dan wil ik hier een stuk invoegen over de rekentijd van \textbf {AdaBoost}\xspace }{8}
+\contentsline {todo}{Ik heb hier en daar een operatie op $\forall i$ veranderd in een vector notatie(vb in stap 6 van \textbf {Hedge}($\beta $)\xspace , dat vond ik zelf wat fijner lezen. Ook heb ik op een plekken vb $h_t$ naar $h^t$ veranderd om consistent te blijven}{9}

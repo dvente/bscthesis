@@ -8,9 +8,9 @@ import argparse
 
 
 parser = argparse.ArgumentParser(description='Test an algorithm and plot error as function of number of iterations')
-parser.add_argument('--trainData', default = "../generated/train.dat",help="location of the training data")
-parser.add_argument("--testData", default = "../generated/test.dat", help = "location of the test data" )
-parser.add_argument("--results", default = "../generated/data.dat", help = "location to store the calculated data for later use" )
+parser.add_argument('--trainData', default = "../generated/DTtrain.dat",help="location of the training data")
+parser.add_argument("--testData", default = "../generated/DTtest.dat", help = "location of the test data" )
+parser.add_argument("--results", default = "../generated/DTdata.dat", help = "location to store the calculated data for later use" )
 parser.add_argument("-n", "--notify", help="notify phone when done", action="store_true")
 parser.add_argument("-r", "--range", type = int, default = 100, help="Range to test algorithm on")
 parser.add_argument("-p", "--plot", default="plot", help="plot the rendered data and store the plot in PLOT")
@@ -32,7 +32,6 @@ def proces(output, target):
 			print("valerr,",data[0])
 		data[1] = float(data[1])
 		bc.insort(target, data)
-
 
 if __name__ == '__main__':
 	pool = multiprocessing.Pool(None)

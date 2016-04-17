@@ -46,7 +46,11 @@ class NHBoostDT:
 
 	def fit(self):
 		for t in range(1,self.T):
-			self.p = np.exp(pow(vNeg(self.s[t-1]-1),2)/(3*t))-np.exp(pow(vNeg(self.s[t-1]+1),2)/(3*t))
+			self.negMin = vNeg(self.s[t-1]-1)
+			self.negMax = vNeg(self.s[t-1]+1)
+			print(self.negMax)
+			#	raise ValueError("vNeg not working")
+			self.p = np.exp(np.square(self.negMin)/(3*t))-np.exp(np.square(self.negMax)/(3*t))
 			self.p = self.p/sum(self.p)
 			if(not isDist(self.p)):
 				print(sum(list(map(lambda x: x<0,self.p))))
@@ -54,18 +58,17 @@ class NHBoostDT:
 				raise ValueError("Non distribution found")
 				
 			self.weakLearn[t].fit(self.vec, self.label.reshape(-1,1), sample_weight=self.p)#fit weakLearn with dist
+			
 
 			self.gamma = 0.5*sum(self.p*self.label*self.weakLearn[t].predict(self.vec))#calc err on training set
-			
-			self.s[t] = self.s[t-1]+0.5*self.label*self.weakLearn[t].predict(self.vec)-self.gamma
+	
+			self.s[t] = self.s[t-1]+(0.5*self.label*self.weakLearn[t].predict(self.vec))-self.gamma
+
 
 	def predict(self,vec):
 		predict = [self.weakLearn[t].predict(vec) for t in range(1,self.T)]
 		ans = sum(predict)
-		if (ans == [0]):
-			return np.sign(ans + predict[1])#remove first predictor to break the tie
-		else:
-			return np.sign(ans)
+		return np.sign(ans)
 
 parser = argparse.ArgumentParser(description='NHBoostDT trainer')
 parser.add_argument('trails', metavar = 'T', type = int, help='Number of trails to train NHBoostDT with')
@@ -99,6 +102,6 @@ for t in range(0,len(testVec)):
 if(args.verbose):
 	print(a.N, len(testVec), args.trails, boostErr/len(testVec) )
 else:
-	print( args.trails, boostErr/len(testVec)) 	
+	print( args.trails, boostErr/len(testVec), len(a.p)-np.count_nonzero(a.p)) 	
 
 
