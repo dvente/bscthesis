@@ -7,7 +7,7 @@ import argparse
 parser = argparse.ArgumentParser(description='generate 10-gaussian-data')
 parser.add_argument('cases', metavar = 'N', type = int, help='Number of examples to generate')
 parser.add_argument('file', default = "../generated/train.dat",help="location to store the generated data")
-parser.add_argument('--label', '-l', choices=['0','1'], default = 0, help="give output in {0,1} or {-1,+1}  resp ")
+parser.add_argument('--label', '-l', choices=['0','1'], default = '0', help="give output in {0,1} or {-1,+1}  resp ")
 
 args = parser.parse_args()
 

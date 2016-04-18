@@ -31,6 +31,8 @@ def proces(output, target):
 		except ValueError:
 			print("valerr,",data[0])
 		data[1] = float(data[1])
+		data[2] = float(data[2])
+		data[3] = float(data[3])
 		bc.insort(target, data)
 
 if __name__ == '__main__':
@@ -42,6 +44,8 @@ if __name__ == '__main__':
 	if(args.plot or args.show):
 		bins = np.array([item[0] for item in results])
 		err = np.array([item[1] for item in results])
+		incl = np.array([item[2] for item in results])
+		zero = np.array([item[3] for item in results])
 		
 		with open(args.trainData, 'r') as f:
 			first_line = f.readline()
@@ -76,6 +80,8 @@ if __name__ == '__main__':
 		plt.subplots_adjust(left = 0.15)
 		
 		plt.plot(bins, err, color='r')
+		plt.plot(bins, incl, color='b')
+		plt.plot(bins, zero, color='g')
 		plt.grid()
 		if(args.plot):
 			plt.savefig("../generated/" +  args.plot +".png")
