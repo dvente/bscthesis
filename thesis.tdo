@@ -1,5 +1,0 @@
-\contentsline {todo}{Denk je dat ik hier en in de appendices de $\beta $ al moet vertalen naar een $\eta $ of zal ik eerst trouw aan de literatuur blijven en later overstappen?}{2}
-\contentsline {todo}{Mocht er genoeg tijd zijn dan wil ik hier een stuk invoegen over de rekentijd van \textbf {AdaBoost}\xspace }{5}
-\contentsline {todo}{hier komt een stuk over de resultaten van \textbf {NH-Boost.DT}\xspace zodra de implementatie werkt}{6}
-\contentsline {todo}{Zal ik hier al vergelijkingen maken tussen \textbf {AdaBoost}\xspace en \textbf {NH-Boost.DT}\xspace of wachten en ze alle drie tegelijk vergelijken?}{6}
-\contentsline {todo}{Ik heb hier en daar een operatie op $\forall i$ veranderd in een vector notatie(vb in stap 6 van \textbf {Hedge}($\beta $)\xspace , dat vond ik zelf wat fijner lezen. Ook heb ik op een plekken vb $h_t$ naar $h^t$ veranderd om consistent te blijven}{7}

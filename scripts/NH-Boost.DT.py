@@ -3,12 +3,37 @@ import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 import argparse
 from sklearn import tree
+from scipy.misc import logsumexp
 import matplotlib.pyplot as plt
 import subprocess
+import mutate as mt
+#import logDiff
 
+parser = argparse.ArgumentParser(description='NHBoostDT trainer')
+parser.add_argument('trails', metavar = 'T', type = int, help='Number of trails to train NHBoostDT with')
+parser.add_argument('--trainData', default = "../generated/DTtrain.dat",help="location of the training data")
+parser.add_argument("--testData", default = "../generated/DTtest.dat", help = "location of the test data" )
+parser.add_argument("-c", "--clean", action = "store_true")
+parser.add_argument("-s", "--stabilityCheck", action = "store_true")
+parser.add_argument("-v", "--verbose", help="display number of traing and test cases aswell", action="store_true")
+
+args = parser.parse_args()
+
+def logDiff(a,b):
+	if(np.any(a<b)):
+		raise DomainError("a<b undefined in logDiff")
+	x = np.log(a)
+	y = np.log(b)
+	v = np.log(max(a,b))
+	return np.log(np.exp(x-v)-np.exp(y-v))+v
+
+vLogDiff = np.vectorize(logDiff)
 
 def isDist(array):
-	return (sum(list(map(lambda x: x<0,array)))==0 and np.isclose(sum(array),1.0))
+	return (np.any(array<0) and np.isclose(sum(array),1.0))
+
+def isLogDist(array):
+	return (np.any(np.exp(array)<0) and np.isclose(logsumexp(array),1.0))
 
 def uniformDist(N):
 	w = [float(1/N) for i in range(0,N)]
@@ -33,6 +58,7 @@ def readData(file):
 
 	return (vec,label)
 
+
 class NHBoostDT:
 	def __init__(self, T, data):
 		self.T = T + 1
@@ -48,24 +74,12 @@ class NHBoostDT:
 
 	def fit(self):
 		for t in range(1,self.T):
-			# self.negMin = vNeg(self.s[t-1]-1)
-			# self.negMax = vNeg(self.s[t-1]+1)
-			# self.negMaxSq = np.power(self.negMax,2)
-			# self.negMinSq = np.power(self.negMin,2)
-			# self.negMaxSqDiv = self.negMax/(3*t)
-			# self.negMinSqDiv = self.negMin/(3*t)
-			# #print(self.negMinSqDiv, self.negMaxSqDiv)
-			# self.negMaxSqDivExp = np.exp(self.negMaxSqDiv)
-			# self.negMinSqDivExp = np.exp(self.negMinSqDiv)
 			
-			#print(self.negMax)
-			#	raise ValueError("vNeg not working")
-			self.p = np.exp(np.square(vNeg(self.s[t-1]-1))/(3*t))-np.exp(np.square(vNeg(self.s[t-1]+1))/(3*t))
-			#self.p = self.negMinSqDivExp - self.negMaxSqDivExp
-			self.p = self.p/sum(self.p)
-			if(not isDist(self.p)):
-				print(sum(list(map(lambda x: x<0,self.p))))
-				print(np.isclose(sum(self.p),1.0))
+			self.p = vLogDiff((np.square(vNeg(self.s[t-1]-1))/(3*t)),np.square(vNeg(self.s[t-1]+1))/(3*t))
+			self.p = self.p-(sum(self.p))
+			if(not isLogDist(self.p)):
+				print(sum(list(map(lambda x: np.exp(x)<0,self.p))))
+				print(np.isclose(logsumexp(self.p),1.0))
 				raise ValueError("Non distribution found")
 				
 			self.weakLearn[t].fit(self.vec, self.label.reshape(-1,1), sample_weight=self.p)#fit weakLearn with dist
@@ -80,15 +94,6 @@ class NHBoostDT:
 		predict = [self.weakLearn[t].predict(vec) for t in range(1,self.T)]
 		ans = sum(predict)
 		return np.sign(ans)
-
-parser = argparse.ArgumentParser(description='NHBoostDT trainer')
-parser.add_argument('trails', metavar = 'T', type = int, help='Number of trails to train NHBoostDT with')
-parser.add_argument('--trainData', default = "../generated/DTtrain.dat",help="location of the training data")
-parser.add_argument("--testData", default = "../generated/DTtest.dat", help = "location of the test data" )
-parser.add_argument("-c", "--clean", action = "store_true")
-parser.add_argument("-v", "--verbose", help="display number of traing and test cases aswell", action="store_true")
-
-args = parser.parse_args()
 
 if(args.clean):
 	with open(args.trainData, 'r') as f:
@@ -119,23 +124,10 @@ for t in range(0,len(testVec)):
 	ans = a.predict(testVec[t].reshape(1,-1))
 	if(ans == [0]):
 		incl += 1
-	#if(a.predict(testVec[t].reshape(1,-1)) == [0]):
-		# print(testVec[t].reshape(1,-1))
-		# print(a.predict(testVec[t].reshape(1,-1)))
-		# print(sum(map(lambda x: x**2, testVec[t])) > 9.34)
 	if(ans != testLabel[t]):
-		#print(a.predict(testVec[t].reshape(1,-1)))
-		#print(testLabel[t])
 		boostErr += 1
 
 if(args.verbose):
 	print(a.N, len(testVec), args.trails, boostErr/len(testVec) )
 else:
 	print( args.trails, boostErr/len(testVec), incl/len(testVec),(len(a.p)-np.count_nonzero(a.p))/len(a.p) )	
-# col = a.sDiv[:,5]
-# print(col)
-# plt.plot(col)
-# plt.show()
-# slice = 24
-# print(a.s[:,slice])
-# print(a.sDiv[:,slice])

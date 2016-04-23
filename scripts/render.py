@@ -6,7 +6,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 
-
 parser = argparse.ArgumentParser(description='Test an algorithm and plot error as function of number of iterations')
 parser.add_argument('--trainData', default = "../generated/DTtrain.dat",help="location of the training data")
 parser.add_argument("--testData", default = "../generated/DTtest.dat", help = "location of the test data" )
@@ -16,6 +15,7 @@ parser.add_argument("-r", "--range", type = int, default = 100, help="Range to t
 parser.add_argument("-p", "--plot", default="plot", help="plot the rendered data and store the plot in PLOT")
 parser.add_argument("-s", "--show", help="show the plot after it is rendered", action="store_true")
 parser.add_argument("-a",'--algorithm', default = "AdaBoost",help="Algorithm to render errors of")
+parser.add_argument("-c", "--clean", action = "store_true", help="generate new test and training data before running")
 args = parser.parse_args()
 
 def work(N):
@@ -36,6 +36,19 @@ def proces(output, target):
 		bc.insort(target, data)
 
 if __name__ == '__main__':
+	if(args.clean):
+		with open(args.trainData, 'r') as f:
+			first_line = f.readline()
+		
+		N = int(first_line.rstrip())
+		
+		with open(args.testData, 'r') as f:
+			first_line = f.readline()
+
+		M = int(first_line.rstrip())
+		subprocess.call(["python3.4 generate.py " + str(N) + " " + args.trainData + " -l 1" ], shell=True)
+		subprocess.call(["python3.4 generate.py " + str(M) + " " + args.testData+ " -l 1" ], shell=True)
+
 	pool = multiprocessing.Pool(None)
 	tasks = range(1,args.range)
 	results = []
