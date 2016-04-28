@@ -6,7 +6,8 @@ from sklearn import tree
 from scipy.misc import logsumexp
 import matplotlib.pyplot as plt
 import subprocess
-import mutate as mt
+import random
+#import mutate as mt
 #import logDiff
 
 parser = argparse.ArgumentParser(description='NHBoostDT trainer')
@@ -19,25 +20,8 @@ parser.add_argument("-v", "--verbose", help="display number of traing and test c
 
 args = parser.parse_args()
 
-def logDiff(a,b):
-	if(np.any(a<b)):
-		raise DomainError("a<b undefined in logDiff")
-	x = np.log(a)
-	y = np.log(b)
-	v = np.log(max(a,b))
-	return np.log(np.exp(x-v)-np.exp(y-v))+v
-
-vLogDiff = np.vectorize(logDiff)
-
 def isDist(array):
-	return (np.any(array<0) and np.isclose(sum(array),1.0))
-
-def isLogDist(array):
-	return (np.any(np.exp(array)<0) and np.isclose(logsumexp(array),1.0))
-
-def uniformDist(N):
-	w = [float(1/N) for i in range(0,N)]
-	return w
+	return (sum(list(map(lambda x: x<0,array)))==0 and np.isclose(sum(array),1.0))
 
 def neg(s):
 	return min(0,s)
@@ -58,6 +42,9 @@ def readData(file):
 
 	return (vec,label)
 
+testVec, testLabel = readData(args.testData);
+testVec = np.array(testVec)
+testLabel = np.array(testLabel)
 
 class NHBoostDT:
 	def __init__(self, T, data):
@@ -67,27 +54,49 @@ class NHBoostDT:
 		self.label = np.array(self.label)
 		self.N = len(self.vec)
 		self.s = np.zeros((self.T,self.N))
-		self.sDiv = np.zeros((self.T,self.N))
 		self.p = np.array((1,self.N))
-		self.gamma = np.zeros(self.T)
+		self.gamma = np.zeros((self.T,self.N))
 		self.weakLearn = np.array([DecisionTreeClassifier(max_depth = 1) for i in range(0,self.T)])
+
 
 	def fit(self):
 		for t in range(1,self.T):
-			
-			self.p = vLogDiff((np.square(vNeg(self.s[t-1]-1))/(3*t)),np.square(vNeg(self.s[t-1]+1))/(3*t))
-			self.p = self.p-(sum(self.p))
-			if(not isLogDist(self.p)):
-				print(sum(list(map(lambda x: np.exp(x)<0,self.p))))
-				print(np.isclose(logsumexp(self.p),1.0))
-				raise ValueError("Non distribution found")
-				
-			self.weakLearn[t].fit(self.vec, self.label.reshape(-1,1), sample_weight=self.p)#fit weakLearn with dist
+			self.p = np.exp(np.square(vNeg(self.s[t-1]-1))/(3*t))-np.exp(np.square(vNeg(self.s[t-1]+1))/(3*t))
+			self.p = self.p/sum(self.p)
+			if not isDist(self.p):
+				print(sum(self.p))
+				print(np.all(self.p>0))
+				raise ValueError("Non dist")
 
-			self.gamma[t] = 0.5*sum(self.p*self.label*self.weakLearn[t].predict(self.vec))#calc edge of hypothesis
-			if(self.gamma[t] < 0 ):
-				raise ValueError("Invalid edge")
-			self.s[t] = self.s[t-1]+((0.5*self.label*self.weakLearn[t].predict(self.vec))-self.gamma[t])
+			self.weakLearn[t].fit(self.vec,self.label.reshape(-1,1), sample_weight = self.p)
+			#self.well = self.label*self.weakLearn[t].predict(self.vec)
+			self.gamma[t] = self.p*self.label*self.weakLearn[t].predict(self.vec)
+			self.s[t] = self.s[t-1]+0.5*self.label*self.weakLearn[t].predict(self.vec)-0.5*sum(self.gamma[t])
+
+
+	# def fit(self):
+	# 	for t in range(1,self.T):
+			
+	# 		self.p = np.exp(np.square(vNeg(self.s[t-1]-1))/(3*t))-np.exp(np.square(vNeg(self.s[t-1]+1))/(3*t))
+	# 		self.p = self.p/(sum(self.p))
+	# 		if(not isDist(self.p)):
+	# 			print(sum(list(map(lambda x: x<0,self.p))))
+	# 			print(np.isclose(sum(self.p),1.0))
+	# 			raise ValueError("Non distribution found")
+				
+	# 		self.weakLearn[t].fit(self.vec, self.label.reshape(-1,1), sample_weight=self.p)#fit weakLearn with dist
+	# 		Werr = sum(np.multiply(self.p,abs(self.weakLearn[t].predict(self.vec)-self.label)//2))
+	# 		err = sum(abs(self.weakLearn[t].predict(self.vec)-self.label)//2) / len(self.label)
+	# 		if(err > 0.5 or Werr > 0.5):
+	# 			print (Werr,err,t)
+	# 			#raise ValueError("INVALID weakLearn")
+	# 		self.margin = self.p*self.label*self.weakLearn[t].predict(self.vec)
+	# 		self.gamma[t] = 0.5*sum(self.margin)#calc edge of hypothesis
+	# 		print(self.margin)
+	# 		if(self.gamma[t] < 0 ):
+	# 			raise ValueError("Invalid edge")
+			
+	# 		self.s[t] = self.s[t-1]+((0.5*self.label*self.weakLearn[t].predict(self.vec))-self.gamma[t])
 
 
 	def predict(self,vec):
@@ -112,7 +121,11 @@ boostErr = 0
 incl = 0
 a = NHBoostDT(args.trails, args.trainData)
 a.fit()
+for i in range(0,3):
 
+	plt.plot(a.gamma[:,random.randint(0,200)])
+	plt.grid()
+	plt.show()
 #print(np.sign(sum([a.weakLearn[t].predict(a.vec[1].reshape(1,-1)) for t in range(1,a.T)])))
 
 #output format of a.predict is incorrect i.e. [0] 
