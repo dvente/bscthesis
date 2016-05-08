@@ -9,8 +9,7 @@ def isDist(array):
 	return (sum(list(map(lambda x: x<0,array)))==0 and np.isclose(sum(array),1.0))
 
 def uniformDist(N):
-	w = [float(1/N) for i in range(0,N)]
-	return w
+	return  [float(1/N) for i in range(0,N)]
 
 def readData(file):
 	vec = []
@@ -34,6 +33,7 @@ class AdaBoost:
 		self.label = np.array(self.label)
 		self.N = len(self.vec)
 		self.w = np.array(dataDist(self.N))
+		print(self.N)
 		self.p = np.array(self.w/sum(self.w))
 		self.err = 0
 		self.beta = np.zeros(self.T)
@@ -46,6 +46,7 @@ class AdaBoost:
 			if(not isDist(self.p)):
 				print(sum(list(map(lambda x: x<0,self.p))))
 				print(np.isclose(sum(self.p),1.0))
+				print(sum(self.p))
 				raise ValueError("Non distribution found")
 				
 			self.weakLearn[t].fit(self.vec, self.label.reshape(-1,1), sample_weight=self.p)#fit weakLearn with dist

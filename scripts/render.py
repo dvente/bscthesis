@@ -99,10 +99,10 @@ if __name__ == '__main__':
 		if(args.plot):
 			plt.savefig("../generated/" +  args.plot +".png")
 		if(args.notify):
-			subprocess.call(['pushover --api-token aqz4SVrrb5a67EwnytQvmfnrYUnifw --user-key uUNPbABuEqPWvR5Y9agZeB59ZiMkqo "Your script is done"'], shell=True)
+			subprocess.call(['push "Python script" "Your script is done rendering"'], shell=True)
 		if(args.show):
 			plt.show()
 	else:
 		print(results)
 		if(args.notify):
-			subprocess.call(['pushover --api-token aqz4SVrrb5a67EwnytQvmfnrYUnifw --user-key uUNPbABuEqPWvR5Y9agZeB59ZiMkqo "Your script is done"'], shell=True)
+			subprocess.call(['push "Python script" "Your script is done rendering"'], shell=True)
