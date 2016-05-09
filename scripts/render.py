@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 import argparse
 
 parser = argparse.ArgumentParser(description='Test an algorithm and plot error as function of number of iterations')
-parser.add_argument('--trainData', default = "../generated/DTtrain.dat",help="location of the training data")
-parser.add_argument("--testData", default = "../generated/DTtest.dat", help = "location of the test data" )
-parser.add_argument("--results", default = "../generated/DTdata.dat", help = "location to store the calculated data for later use" )
+parser.add_argument('--trainData', default = "../generated/train.dat",help="location of the training data")
+parser.add_argument("--testData", default = "../generated/test.dat", help = "location of the test data" )
+parser.add_argument("--results", default = "../generated/data.dat", help = "location to store the calculated data for later use" )
 parser.add_argument("-n", "--notify", help="notify phone when done", action="store_true")
 parser.add_argument("-r", "--range", type = int, default = 100, help="Range to test algorithm on")
 parser.add_argument("-p", "--plot", default="plot", help="plot the rendered data and store the plot in PLOT")
@@ -19,8 +19,8 @@ parser.add_argument("-c", "--clean", action = "store_true", help="generate new t
 args = parser.parse_args()
 
 def work(N):
-	#print('python3.4 ' + args.algorithm + '.py ' + str(N) + ' ' + '--trainData ' + args.trainData + ' --testData ' + args.testData)
-	return subprocess.check_output(['python3.4 ' + args.algorithm + '.py ' + str(N) + ' ' + '--trainData ' + args.trainData + ' --testData ' + args.testData], shell=True).decode("utf-8")
+	#print('python3.5 ' + args.algorithm + '.py ' + str(N) + ' ' + '--trainData ' + args.trainData + ' --testData ' + args.testData)
+	return subprocess.check_output(['python3.5 ' + args.algorithm + '.py ' + str(N) + ' ' + '--trainData ' + args.trainData + ' --testData ' + args.testData], shell=True).decode("utf-8")
 
 def proces(output, target):
 	for item in output:
@@ -31,8 +31,8 @@ def proces(output, target):
 		except ValueError:
 			print("valerr,",data[0])
 		data[1] = float(data[1])
-		data[2] = float(data[2])
-		data[3] = float(data[3])
+		# data[2] = float(data[2])
+		# data[3] = float(data[3])
 		bc.insort(target, data)
 
 if __name__ == '__main__':
@@ -46,8 +46,8 @@ if __name__ == '__main__':
 			first_line = f.readline()
 
 		M = int(first_line.rstrip())
-		subprocess.call(["python3.4 generate.py " + str(N) + " " + args.trainData + " -l 1" ], shell=True)
-		subprocess.call(["python3.4 generate.py " + str(M) + " " + args.testData+ " -l 1" ], shell=True)
+		subprocess.call(["python3.5 generate.py " + str(N) + " " + args.trainData + " -l 1" ], shell=True)
+		subprocess.call(["python3.5 generate.py " + str(M) + " " + args.testData+ " -l 1" ], shell=True)
 
 	pool = multiprocessing.Pool(None)
 	tasks = range(1,args.range)
@@ -57,8 +57,8 @@ if __name__ == '__main__':
 	if(args.plot or args.show):
 		bins = np.array([item[0] for item in results])
 		err = np.array([item[1] for item in results])
-		incl = np.array([item[2] for item in results])
-		zero = np.array([item[3] for item in results])
+		#incl = np.array([item[2] for item in results])
+		#zero = np.array([item[3] for item in results])
 		
 		with open(args.trainData, 'r') as f:
 			first_line = f.readline()
@@ -70,10 +70,10 @@ if __name__ == '__main__':
 
 		M = int(first_line.rstrip())
 
-		stumpAns = subprocess.check_output(['python3.4 tree.py -n 1 ' + ' --testData ' +  args.testData + ' --trainData ' + args.trainData], shell=True).decode("utf-8")
+		stumpAns = subprocess.check_output(['python3.5 tree.py -n 1 ' + ' --testData ' +  args.testData + ' --trainData ' + args.trainData], shell=True).decode("utf-8")
 		stumpAns = stumpAns.rstrip()
 		stumpAns = stumpAns.split(" ")
-		treeAns = subprocess.check_output(['python3.4 tree.py -n 500 ' + ' --testData ' +  args.testData + ' --trainData ' + args.trainData], shell=True).decode("utf-8")
+		treeAns = subprocess.check_output(['python3.5 tree.py -n 500 ' + ' --testData ' +  args.testData + ' --trainData ' + args.trainData], shell=True).decode("utf-8")
 		treeAns = treeAns.rstrip()
 		treeAns = treeAns.split(" ")
 
@@ -93,16 +93,17 @@ if __name__ == '__main__':
 		plt.subplots_adjust(left = 0.15)
 		
 		plt.plot(bins, err, color='r')
-		plt.plot(bins, incl, color='b')
-		plt.plot(bins, zero, color='g')
+		# plt.plot(bins, incl, color='b')
+		# plt.plot(bins, zero, color='g')
 		plt.grid()
 		if(args.plot):
 			plt.savefig("../generated/" +  args.plot +".png")
 		if(args.notify):
-			subprocess.call(['push "Python script" "Your script is done rendering"'], shell=True)
+			subprocess.Popen(["/bin/bash", "-i", "-c", "push \"Python script done\" \"Your algorithm is done rendering\""])
+
 		if(args.show):
 			plt.show()
 	else:
 		print(results)
 		if(args.notify):
-			subprocess.call(['push "Python script" "Your script is done rendering"'], shell=True)
+			subprocess.Popen(["/bin/bash", "-i", "-c", "push \"Python script done\" \"Your algorithm is done rendering\""])

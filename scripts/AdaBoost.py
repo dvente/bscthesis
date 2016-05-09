@@ -1,4 +1,4 @@
-#!/usr/bin/python3.4
+#!/usr/bin/python3.5
 import numpy as np
 import sys
 from sklearn.tree import DecisionTreeClassifier
@@ -33,7 +33,6 @@ class AdaBoost:
 		self.label = np.array(self.label)
 		self.N = len(self.vec)
 		self.w = np.array(dataDist(self.N))
-		print(self.N)
 		self.p = np.array(self.w/sum(self.w))
 		self.err = 0
 		self.beta = np.zeros(self.T)
