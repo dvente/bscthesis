@@ -104,7 +104,7 @@ Again \NHB uses several instances of \weak, which are all expected to have \text
 
  \par As we discussed before \adaB uses \hedge as a subroutine. Similarly \NHB uses \adaN as a subroutine by feeding it a loss vector which is based on the margins of the hypothesis of the previous rounds. So essentially the main difference between \NHB and \adaB is that they use different hedging algorithms as subroutines but the overall (boosting) framework remains the same. This also illustrates that the performance of the boosting algorithms largely depends on the performance of the hedging algorithms that they depend on. Since \hedge and \adaN have similar performances, so do \adaB and \NHB as we will see in chapter \ref{chap:pracPerf}.
 
-
+\newpage
 \section{\squintB}
 \label{sec:squintB}
 Unlike the previous sections, here we will first take a more careful look at \squint, which is the hedging algorithm instead of the boosting algorithm. This is because \squint hasn't been studied in the context of boosting before and therefore we wish to introduce it formally before we discuss it in the context of boosting. 
@@ -125,7 +125,28 @@ In answer to these problems two lines of research were started. The firs one att
  \end{theorem}
 
  Again we will omit the proof but briefly discuss it. Firstly it should be observed that the fact that we have a closed-form for the integral which makes it computationally efficient. Furthermore it is usefully to note that we consider $\ln(\ln(x))$ to be essentially constant so the above bound indeed achieves a quantile bound with a dependence on the variances, improving the bounds of previous algorithms. 
-
- \subsection{\squintB}
- \label{subsec:squintB}
- We will now discuss \squint and how we can apply it in the setting of boosting to obtain \squintB
+\newpage
+\subsection{\squintB}
+\label{subsec:algoSquintB}
+Plugging the above theorem into the boosting framework yields \squintB wich can be found in algorithm \ref{fig:squintBCode} below. Since there isn't a lot known about \squintB yet we won't go into great detail here, as we will examine it and its perfomance in chapter \ref{chap:pracPerf}
+\begin{algorithm} 
+\caption{\NHB}
+\label{fig:squintBCode}
+\begin{algorithmic}[1]
+\Require 
+\Statex $N$ labelled samples $\Vec{y_1\\ \mathbf x_1},\ldots,\Vec{y_N\\ \mathbf x_N}$  with $\mathcal Y = \set{-1,+1}$ 
+\Statex Weak learning algorithm $\weak$
+\Statex Number of trials $T$
+\Procedure{\squintB}{}
+\State \textbf{Initialize} $\mathbf{R^0,V^0,r^0} = \mathbf 0$
+\For {$t= 1,2,\ldots,T$}
+\State Set: $\mathbf p^t \propto \pi(i) \frac{\sqrt{\pi}e^{\frac{(R^t_i)^2}{4V^t_i}}\lubke{\erf\lubke{\frac{R^t_i}{2\sqrt{V_i^t}}}-\erf\lubke{\frac{R_i^t-V_i^t}{2\sqrt{V_i^t}}}}}{2\sqrt{V_i^t}} $ 
+\State Call $\weak(\mathbf p^t)$ and get hypothesis $h^t$ with edge $\gamma^t = \sum_{i=1}^N p^t_ih^t(\mathbf x_i)y_i$
+\State Set: $r_i^t=\frac12h^t(\mathbf x_i)y_i-\gamma^t$ 
+\State Set: $R_i^t = R_i^{t-1} + r_i^t $ 
+\State Set: $V_i^t = V_i^{t-1} + (r_i^t)^2$
+\EndFor\\
+\Return $H(\mathbf x) = \sign\lubke{\sum^T_{t=1}h^t(\mathbf{x})}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}

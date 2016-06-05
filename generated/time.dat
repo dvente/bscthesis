@@ -1,0 +1,15 @@
+Adaboost time
+execution time:  60.122142183
+iterations:  241
+testing time:  414.59384728000003
+241 0.1111111111111111 0.0 0.0
+NH-Boost.DT time
+execution time:  60.000129778
+iterations:  15407
+testing time:  6453.419028477
+15407 0.0699 0.0018 0.681
+Squint time
+execution time:  60.022706934999995
+iterations:  1711
+testing time:  1474.809480239
+1711 0.0756 0.0102 0.0

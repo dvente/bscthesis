@@ -5,6 +5,7 @@ import argparse
 import squint
 import subprocess
 import matplotlib.pyplot as plt
+from sklearn.datasets import load_svmlight_file
 
 
 parser = argparse.ArgumentParser(description='SquintBoost trainer')
@@ -42,17 +43,19 @@ def readData(file):
 
 	return (vec,label)
 
-testVec, testLabel = readData(args.testData);
-testVec = np.array(testVec)
-testLabel = np.array(testLabel)
+
+
+# testVec, testLabel = load_svmlight_file("a9a")
+# testVec = np.array(testVec)
+# testLabel = np.array(testLabel)
 
 class SquintBoost:
 	def __init__(self, T, data):
 		self.T = T + 1
-		self.vec, self.label = readData(data)
-		self.vec = np.array(self.vec)
-		self.label = np.array(self.label)
-		self.N = len(self.vec)
+		self.vec, self.label = load_svmlight_file("a9a")
+		# self.vec = np.array(self.vec)
+		# self.label = np.array(self.label)
+		self.N = len(self.label)
 		self.p = np.array((1,self.N))
 		self.weakLearn = np.array([DecisionTreeClassifier(max_depth = 1) for i in range(0,self.T)])
 		#self.weakLearn = np.array([DecisionStump() for i in range(0,self.T)])
@@ -103,18 +106,17 @@ incl = 0
 a = SquintBoost(args.trails, args.trainData)
 a.fit()
 
-testVec, testLabel = readData(args.testData)
-testVec = np.array(testVec)
-testLabel = np.array(testLabel)
-for t in range(0,len(testVec)):
-	ans = a.predict(testVec[t].reshape(1,-1))
+testVec, testLabel = load_svmlight_file("a9a.t")
+# print(testVec.shape)
+# print(a.vec.shape)
+# testVec = np.array(testVec)
+# testLabel = np.array(testLabel)
+for t in range(0,len(testLabel)):
+	ans = a.predict(testVec[t])
 	if(ans == [0]):
 		incl += 1
-	if(ans != testLabel[t]):
+		boostErr += 0.5
+	elif(ans != testLabel[t]):
 		boostErr += 1
 
-# if(args.verbose):
-# 	print(a.N, len(testVec), args.trails, boostErr/len(testVec) )
-# else:
-# 	print(args.trails, boostErr/len(testVec), incl/len(testVec),(len(a.p)-np.count_nonzero(a.p))/len(a.p) )	
-print(args.trails, boostErr/len(testVec), incl/len(testVec),(len(a.p)-np.count_nonzero(a.p))/len(a.p) )	
+print(args.trails, boostErr/len(testLabel), incl/len(testLabel),(len(a.p)-np.count_nonzero(a.p))/len(a.p) )	

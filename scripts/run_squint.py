@@ -38,6 +38,7 @@ def main():
 	prior[-1] = 1
 
 	pi = np.diff(prior)
+	print(pi)
 
 	# loss rates of the experts
 	rates = np.random.rand(1, K)  # random rates (typically easy data)
