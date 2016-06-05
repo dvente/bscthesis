@@ -3,6 +3,9 @@ import numpy as np
 import sys
 from sklearn.tree import DecisionTreeClassifier
 import argparse
+from sklearn.datasets import load_svmlight_file
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 def isDist(array):
 	return (sum(list(map(lambda x: x<0,array)))==0 and np.isclose(sum(array),1.0))
@@ -25,15 +28,10 @@ def readData(file):
 
 	return (vec,label)
 
-def conv(inp):
-	if inp:
-		return 1
-	else:
-		return 0
-
 
 parser = argparse.ArgumentParser(description='AdaBoost trainer')
 parser.add_argument('-n', '--nodes', type = int, default = 0, help='Maximum number of nodes of the tree, use 0 for unlimited nodes.')
+parser.add_argument('--svm', action="store_true")
 parser.add_argument('--trainData', default = "../generated/train.dat",help="location of the training data")
 parser.add_argument("--testData", default = "../generated/test.dat", help = "location of the test data" )
 parser.add_argument("-v", "--verbose", help="display number of traing and test cases aswell", action="store_true")
@@ -41,9 +39,12 @@ parser.add_argument("-v", "--verbose", help="display number of traing and test c
 args = parser.parse_args()
 
 boostErr = 0
-vec, label = readData(args.trainData)
-vec = np.array(vec)
-label = np.array(label).reshape(-1,1)
+if args.svm:
+	vec, label = load_svmlight_file("a9a")
+else:
+	vec, label = readData(args.trainData)
+	vec = np.array(vec)
+	label = np.array(label)
 
 
 if(args.nodes == 0):
@@ -53,16 +54,20 @@ else:
 
 a.fit(vec,label)
 
-testVec, testLabel = readData(args.testData);
-testVec = np.array(testVec)
-testLabel = np.array(testLabel)
-for t in range(0,len(testVec)):
-	if(a.predict(testVec[t].reshape(1,-1)) != testLabel[t]):
+if args.svm:
+	testVec, testLabel = load_svmlight_file("a9a.t")
+else:
+	testVec, testLabel = readData(args.testData);
+	testVec = np.array(testVec)
+	testLabel = np.array(testLabel)
+
+for t in range(0,len(testLabel)):
+	if(a.predict(testVec[t]) != testLabel[t]):
 		boostErr += 1
 
 if(args.verbose):
-	print(a.N, len(testVec), a.tree_.node_count, boostErr/len(testVec) )
+	print(a.N, len(testLabel), a.tree_.node_count, boostErr/len(testLabel) )
 else:
-	print(a.tree_.node_count, boostErr/len(testVec)) 	
+	print(a.tree_.node_count, boostErr/len(testLabel)) 	
 
 
