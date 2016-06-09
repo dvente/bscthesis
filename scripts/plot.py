@@ -91,7 +91,7 @@ if args.algo == "NH-Boost.DT":
 if args.algo != "AdaBoost":
 	plt.legend()
 plt.grid()
-plt.tight_layout()
+plt.axis([0,len(bins),0,0.5])
 plt.savefig("../generated/" + args.title + ".png")
 
 if(args.show):

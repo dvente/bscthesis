@@ -2,22 +2,21 @@
 
 
 
-\chapter{Practical performences}
+\chapter{Practical performance}
 \label{chap:pracPerf}
 \section{Setup}
 \label{sec:Setup}
-In the following chapter we will examine the practical relative performances of the three algorithms. We will do so in several ways. The first way is with the use of simulated data (recreated from \cite{Hastie2009}). We have ten features $X_1,\ldots,X_{10}$ which are drawn from a standard independent Gaussian. Their label is determined (deterministically) by the following rule: $$Y:=\begin{cases}
-1 & \text{ if } \sum_{k=0}^{10} (X_k)^2 > \chi_{10}^2(0.5)\\
+In this chapter we will examine the practical relative performance of the three algorithms. We will do so in several ways. The first way is with the use of simulated data (recreated from \cite{Hastie2009}). We have ten features $X_1,\ldots,X_{10}$ which are drawn from a standard independent Gaussian. Their label is determined (deterministically) by the following rule: $$Y:=\begin{cases}
+1 & \text{ if } \sum_{k=1}^{10} (X_k)^2 > \chi_{10}^2(0.5)\\
 -1 & \text{otherwise}
-\end{cases}$$ Where $\chi_{10}^2(0.5)=9.34$ is the median of a chi-squared random variable with ten degrees of freedom. This is to ensure that there roughly the same amount of labels in each category. 
+\end{cases}$$ Where $\chi_{10}^2(0.5)=9.34$ is the median of a chi-squared random variable with ten degrees of freedom. This is to ensure that there are roughly the same amount of labels in each category. 
 
-\par The second way we will test the algorithms is the UCI ``a9a Adult dataset'' \footnote{https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html}. Here the goal is to predict whether an individual will earn more than \$50,000 per year or not. The original data set has 14 features, among which six are continuous and eight are categorical. In this data set, continuous features are discretized into quantiles, and each quantile is represented by a binary feature. Furthermore a categorical feature with $m$ categories is converted to $m$ binary features. 
-
-\par The final way we will attempt to compare the algorithms is to give them a fixed amount of CPU time and then compare the number of iterations they were able to do until the time elapsed and their accuracy at that point. Because of practical considerations we allow the algorithms to complete the current iteration when the time runs out, but since a single iteration doesn't take very long this should be of little concern.
+\par The second way we will test the algorithms is the UCI ``a9a Adult dataset'' \cite{LIBSVM}O. Here the goal is to predict whether an individual will earn more than \$50,000 per year or not. The original data set has 14 features, among which six are continuous and eight are categorical. In this data set, continuous features are discretized into quantiles, and each quantile is represented by a binary feature. Furthermore a categorical feature with $m$ categories is converted to $m$ binary features. 
 
 \par In an attempt to keep the comparison as consistent as possible we will, in all settings, use 32,561 observations for training and 16,281 for testing. This is because these are the amount of observations in the a9a data set. This ratio of training to testing observations is not uncommon. Recall to avoid over fitting we cannot test the algorithm on the same dataset we use to train it, thus any observations which are used to test cannot be used to train, therefore this kind of ratio is desirable.
 
-\newpage
+\par We implemented the algorithms in 
+
 \section{Datasets}
 \subsection{\adaB}
 \label{subsec:AdaPracPerf}
@@ -29,7 +28,7 @@ In the following chapter we will examine the practical relative performances of 
 \end{figure}
 
 
-\par Looking at figure \ref{fig:adaBGD} it is obvious that our algorithm works. The decision stump initially performs with an error rate of 47\% which is indeed only slightly better than random guessing. \adaB outperforms this and even a large tree with 321 nodes and an error rate of 30\% after just tens of iterations and reaches an error rate as low as 11\% after 250 iterations. 
+\par Looking at figure \ref{fig:adaBGD} it is obvious that \adaB works. The decision stump initially performs with an error rate of 47\% which is indeed only slightly better than random guessing. \adaB outperforms this and even a large tree with 321 nodes and an error rate of 30\% after just tens of iterations and reaches an error rate as low as 11\% after 250 iterations. 
 
 \par Considering figure \ref{fig:adaBSVM} below the situation is a bit different for the a9a data. One sees that the algorithm still works but here we run into some limitations. As we can see the initial stump performs significantly better to start with, with an error rate of 23.6\%. After just 50 iterations we see diminishing returns set in quite drastically, seeing only a slight improvement from 15.7\% to 15.4\% over the course of 200 iterations. Of course this also happens with the simulated data but to a much lesser degree. This is probably due to the fact that the simulated data is much more homogeneous, where in fact all features are equally important, with the hard examples being those where all features are small but just meet the criteria. The observed data however most likely has a few features that improve the accuracy a lot (for example education), but beyond that the data doesn't show any important examples so the gains, after to low hanging fruit have been picked, are marginal. While this is still a good result it is useful to keep this phenomenon in mind while we examine the rest of the algorithms. This characteristic highlights a fundamental disadvantage of a weak learner, namely that depending on the data set there might simply not be a way to improve the accuracy beyond a certain point. 
 
@@ -54,7 +53,7 @@ Before we discuss the results of \NHB here we would like to highlight two import
       \label{fig:NHBGD}
 \end{figure}
  \FloatBarrier
- \par The first thing one notices when looking at the above figure is that this mimics the behavior predicted by the theory, as well as the behavior of \adaB. The error rate as well as the percentage of inconclusive tests steadily decline while the percentage of zero weights steadily increase. In terms of actual percentages the algorithms perform quite similarly as was already studied in \cite{Luo2014}. Where \adaB achieved a error rate of 11.11\% after 250 iterations \NHB achieves 8.06\% which is slightly better. We will see however in section \ref{sec:timed} it is quite a bit faster. This is achieved by zero weight percentage of 8.47\% at the end. Since \NHB is the only algorithm that does this it isn't very useful for comparison's sake, but it is nice to see since it is quite a significant part which, again as we will see, improves performance quite a bit.  
+ \par The first thing one notices when looking at the above figure is that this mimics the behavior predicted by the theory, as well as the behavior of \adaB. The error rate as well as the percentage of inconclusive tests steadily decline while the percentage of zero weights steadily increase. In terms of actual percentages the algorithms perform quite similarly as was already studied in \cite{Luo2014}. Where \adaB achieved a error rate of 11.11\% after 250 iterations \NHB achieves 8.06\% which is much better. This is achieved by zero weight percentage of 8.47\% at the end. Since \NHB is the only algorithm that does this it isn't very useful for comparison's sake, but it is nice to see since it is quite a significant part which, again as we will see, improves performance quite a bit.  
 \begin{figure}[!ht]
   \centering
       \includegraphics[width=\graphWidth]{generated/NHSVM.png}
@@ -67,105 +66,105 @@ Before we discuss the results of \NHB here we would like to highlight two import
 \FloatBarrier
 \subsection{\squintB}
 \label{subsec:sqPracPerf}
-Finally we will consider \squintB. Looking at figure \ref{fig:SQGD} below we again see the predicted behavior. After some initial spikes both the error rate and the fraction of inconclusive tests steadily decline. As one can see it indeed performs incredibly similar to the other algorithms, finally achieving an error rate of 11.7\% compared to the 11.11\% and 8.06\% of \adaB and \NHB respectively. While it is still a good result sadly we must conclude that \squintB doesn't outperform \NHB or even \adaB in this setting. We will see however in section \ref{sec:timed} that \squintB does actually out perform \adaB in a slightly different scenario. 
+Finally we will consider \squintB. Looking at figure \ref{fig:SQGD} below we again see the predicted behavior. After some initial spikes both the error rate and the fraction of inconclusive tests steadily decline. As one can see it indeed performs incredibly similar to the other algorithms, finally achieving an error rate of 11.7\% compared to the 11.11\% and 8.06\% of \adaB and \NHB respectively. While it is still a good result, we must conclude that \squintB doesn't outperform \NHB or even \adaB in this setting. 
 \begin{figure}[!ht]
   \centering
-      \includegraphics[width=\graphWidth]{generated/SQGD.png}
+     \includegraphics[width=\graphWidth]{generated/SQGD.png}
   \caption{Generalization error of \squintB as a function of the number of iterations on the simulated data. The error rates of trees with 3 and 301 nodes resp. are again shown for reference. It is important to remark that for clarities' sake we omitted the inconclusive data points of all odd iterations as they are always 0.}
       \label{fig:SQGD}
 \end{figure}
 
 \par When looking at figure \ref{fig:SQSVM} below of \squintB on the observed data, we again see the same behavior as with the other two algorithms. The initial improvement is quite fast but it bottoms out fairly quickly finally achieving an error rate of 15.04\% which is again extremely similar to the 15.4\% and 15.3\% of the other two algorithms. 
 
-\par So we see that \squintB isn't any better than the other two algorithms when looked at as a function of the number of iterations. This is however more academic discussion since what usually matters is the performance gets for their computation time. We will see in the next section that \squintB perform slightly better with regards to this metric.
+
 \begin{figure}[!ht]
   \centering
-      \includegraphics[width=\graphWidth]{generated/SQSVM.png}
+    \includegraphics[width=\graphWidth]{generated/SQSVM.png}
   \caption{Generalization error of \squintB as a function of the number of iterations on the a9a data. The error rates of trees with 3 and 385 nodes resp. are again shown for reference. It is important to remark that for clarities' sake we omitted the inconclusive data points of all odd iterations as they are always 0.}
       \label{fig:SQSVM}
 \end{figure}
 \FloatBarrier
 
-\newpage
-\section{Computation}
-\label{sec:timed}
 
-Here we will finally describe the performance of the algorithms as a function of the computation time. Each of the algorithms was given a fixed amount of CPU time during which it was allowed to train. When the time elapsed the algorithm was allowed to finish its current iteration and was then tested on the same test data as before. This metric reflects real world performance slightly better than the iteration-wise comparison. This is true since if an algorithm performs worse per iteration but is faster then we can just run it for more iterations and get a better accuracy. We tested all the algorithms on both the data sets, the results of which can be found in table \ref{tbl:GDTime} and \ref{tbl:SVMTime} respectively.
-\begin{table}[htbp]
-\centering
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-Algorithm & Execution time (s) & Iterations & Error (\%) & Inconclusive tests (\%)  \\ \hhline{|=|=|=|=|=|}
-\multirow{ 2}{*}{\adaB} & 1.194 & 5 & 39.64 & 0.00  \\\cline{2-5}
-& 60.122 & 241 &  11.11 & 0.00  \\ \Xhline{1pt}
-\multirow{ 2}{*}{\adaN} & 1.004 & 220 & 11.48  & 0.0 \\\cline{2-5}
-& 60.000 & 15407 &  6.99 & 0.18  \\ \Xhline{1pt}
-\multirow{ 2}{*}{\squintB} & 1.002 & 31 & 26.80  & 39.09\\\cline{2-5}
- & 60.022 & 1711 &  7.56  &  1.02\\ \hline
-\end{tabular}
-\caption{Timed tests of the algorithms on the simulated data}
-\label{tbl:GDTime}
-\end{table}
+% \section{Computation}
+% \label{sec:timed}
 
-\begin{table}[htbp]
-\centering
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-Algorithm & Execution time (s) & Iterations & Error (\%) & Inconclusive tests (\%)  \\ \hhline{|=|=|=|=|=|}
-\multirow{ 2}{*}{\adaB} & 1.167 & 6 & 17.68 & 0.00  \\\cline{2-5}
-& 60.192 & 297 &  15.25 & 0.00  \\ \Xhline{1pt}
-\multirow{ 2}{*}{\NHB} & 1.085 & 12 & 17.80  & 0.0 \\\cline{2-5}
-& 60.0120 & 578 &  15.14 & 0.0  \\ \Xhline{1pt}
-\multirow{ 2}{*}{\squintB} & 1.024 & 15 & 17.93  & 9.23\\\cline{2-5}
- & 60.009 & 815 &  15.23  &  13.81\\ \hline
-\end{tabular}
-\caption{Timed tests of the algorithms on the a9a data}
-\label{tbl:SVMTime}
-\end{table}
+% Here we will finally describe the performance of the algorithms as a function of the computation time. Each of the algorithms was given a fixed amount of CPU time during which it was allowed to train. When the time elapsed the algorithm was allowed to finish its current iteration and was then tested on the same test data as before. This metric reflects real world performance slightly better than the iteration-wise comparison. This is true since if an algorithm performs worse per iteration but is faster then we can just run it for more iterations and get a better accuracy. We tested all the algorithms on both the data sets, the results of which can be found in table \ref{tbl:GDTime} and \ref{tbl:SVMTime} respectively.
+% \begin{table}[htbp]
+% \centering
+% \begin{tabular}{|c|c|c|c|c|}
+% \hline
+% Algorithm & Execution time (s) & Iterations & Error (\%) & Inconclusive tests (\%)  \\ \hhline{|=|=|=|=|=|}
+% \multirow{ 2}{*}{\adaB} & 1.194 & 5 & 39.64 & 0.00  \\\cline{2-5}
+% & 60.122 & 241 &  11.11 & 0.00  \\ \Xhline{1pt}
+% \multirow{ 2}{*}{\adaN} & 1.004 & 220 & 11.48  & 0.0 \\\cline{2-5}
+% & 60.000 & 15407 &  6.99 & 0.18  \\ \Xhline{1pt}
+% \multirow{ 2}{*}{\squintB} & 1.002 & 31 & 26.80  & 39.09\\\cline{2-5}
+%  & 60.022 & 1711 &  7.56  &  1.02\\ \hline
+% \end{tabular}
+% \caption{Timed tests of the algorithms on the simulated data}
+% \label{tbl:GDTime}
+% \end{table}
 
-\par There are several observations to make here. In the tests over the simulated data \NHB significantly outperforms the other two algorithms in iterations in at least an order of magnitude and significantly better error rates in both time categories. \squintB is however still better than \adaB beating it again by almost an order of magnitude in both time categories and improving the error rate in both categories by 4\% in the 60s category and 12\% in the 1s category. It should be noted that 4\% in the former category is still quite significant because of the law of diminishing return. 
-\par When we consider the a9a data set the landscape looks somewhat different. While \squintB performs more iterations than the other two algorithms is has the highest error rate in both categories. We have already discusses the properties of this dataset so we won't go into detail about it again, but the main observation is that these differences aren't significant so we can largely dismiss these results. 
+% \begin{table}[htbp]
+% \centering
+% \begin{tabular}{|c|c|c|c|c|}
+% \hline
+% Algorithm & Execution time (s) & Iterations & Error (\%) & Inconclusive tests (\%)  \\ \hhline{|=|=|=|=|=|}
+% \multirow{ 2}{*}{\adaB} & 1.167 & 6 & 17.68 & 0.00  \\\cline{2-5}
+% & 60.192 & 297 &  15.25 & 0.00  \\ \Xhline{1pt}
+% \multirow{ 2}{*}{\NHB} & 1.085 & 12 & 17.80  & 0.0 \\\cline{2-5}
+% & 60.0120 & 578 &  15.14 & 0.0  \\ \Xhline{1pt}
+% \multirow{ 2}{*}{\squintB} & 1.024 & 15 & 17.93  & 9.23\\\cline{2-5}
+%  & 60.009 & 815 &  15.23  &  13.81\\ \hline
+% \end{tabular}
+% \caption{Timed tests of the algorithms on the a9a data}
+% \label{tbl:SVMTime}
+% \end{table}
 
-\par Table \ref{tbl:SVMTime} does illustrate two other interesting things though. The first is that the iterations are much lower than with the simulated data. This is most likely due to the fact that the simulated data has only 10 features where as the observed data has 123 increasing the processing time quite a bit. In this scenario \squintB did perform significantly more iterations than the other two, suggesting that \squintB might outperform the other two algorithms if the data contains a lot of features but doesn't have the ``low hanging fruit'' problem that the a9a has. 
+% \par There are several observations to make here. In the tests over the simulated data \NHB significantly outperforms the other two algorithms in iterations in at least an order of magnitude and significantly better error rates in both time categories. \squintB is however still better than \adaB beating it again by almost an order of magnitude in both time categories and improving the error rate in both categories by 4\% in the 60s category and 12\% in the 1s category. It should be noted that 4\% in the former category is still quite significant because of the law of diminishing return. 
+% \par When we consider the a9a data set the landscape looks somewhat different. While \squintB performs more iterations than the other two algorithms is has the highest error rate in both categories. We have already discusses the properties of this dataset so we won't go into detail about it again, but the main observation is that these differences aren't significant so we can largely dismiss these results. 
 
-\par Another important observation we can make is about the disadvantage of more iterations. As can be seen in tables \ref{tbl:GDTestingTime} and \ref{tbl:SVMTestingTime} respectively the time that it takes to test the algorithm on the same data set increases linearly with the computation time. This isn't a problem in and of itself but should be taken into consideration. Both the amount of features and the amount of iterations play a role in the computation time, as was to be expected. This means that when considering the algorithms one should not only take into account the number of features and how conducive the data is to boosting (does it have the low hanging fruit property?), but also how much time is a factor in the prediction phase. Namely if the predictions must be very quick then it might be better to take the algorithm that is slower but has to perform less iterations.  
+% \par Table \ref{tbl:SVMTime} does illustrate two other interesting things though. The first is that the iterations are much lower than with the simulated data. This is most likely due to the fact that the simulated data has only 10 features where as the observed data has 123 increasing the processing time quite a bit. In this scenario \squintB did perform significantly more iterations than the other two, suggesting that \squintB might outperform the other two algorithms if the data contains a lot of features but doesn't have the ``low hanging fruit'' problem that the a9a has. 
 
-\begin{table}[htbp]
-\centering
-\begin{tabular}{|c|c|c|}
-\hline
-Algorithm & Execution time (s) & Testing time (s)  \\ \hhline{|=|=|=|}
-\multirow{ 2}{*}{\adaB} & 1.167 & 8.860 \\\cline{2-3}
-& 60.192 & 414.593  \\ \Xhline{1pt}
-\multirow{ 2}{*}{\NHB} & 1.085 & 92.030 \\\cline{2-3}
-& 60.0120 & 6453.419  \\ \Xhline{1pt}
-\multirow{ 2}{*}{\squintB} & 1.024 & 26.194\\\cline{2-3}
- & 60.009 & 1474.809\\ \hline
-\end{tabular}
-\caption{Testing time of the algorithms on the simulated data}
-\label{tbl:GDTestingTime}
-\end{table}
+% \par Another important observation we can make is about the disadvantage of more iterations. As can be seen in tables \ref{tbl:GDTestingTime} and \ref{tbl:SVMTestingTime} respectively the time that it takes to test the algorithm on the same data set increases linearly with the computation time. This isn't a problem in and of itself but should be taken into consideration. Both the amount of features and the amount of iterations play a role in the computation time, as was to be expected. This means that when considering the algorithms one should not only take into account the number of features and how conducive the data is to boosting (does it have the low hanging fruit property?), but also how much time is a factor in the prediction phase. Namely if the predictions must be very quick then it might be better to take the algorithm that is slower but has to perform less iterations.  
 
-\begin{table}[htbp]
-\centering
-\begin{tabular}{|c|c|c|}
-\hline
-Algorithm & Execution time (s) & Testing time (s)  \\ \hhline{|=|=|=|}
-\multirow{ 2}{*}{\adaB} & 1.167 & 24.160 \\\cline{2-3}
-& 60.192 & 1038.695  \\ \Xhline{1pt}
-\multirow{ 2}{*}{\NHB} & 1.085 & 38.211 \\\cline{2-3}
-& 60.0120 & 1829.719  \\ \Xhline{1pt}
-\multirow{ 2}{*}{\squintB} & 1.024 & 47.742\\\cline{2-3}
- & 60.009 & 1870.409\\ \hline
-\end{tabular}
-\caption{Testing time of the algorithms on the a9a data}
-\label{tbl:SVMTestingTime}
-\end{table}
-\FloatBarrier
+% \begin{table}[htbp]
+% \centering
+% \begin{tabular}{|c|c|c|}
+% \hline
+% Algorithm & Execution time (s) & Testing time (s)  \\ \hhline{|=|=|=|}
+% \multirow{ 2}{*}{\adaB} & 1.167 & 8.860 \\\cline{2-3}
+% & 60.192 & 414.593  \\ \Xhline{1pt}
+% \multirow{ 2}{*}{\NHB} & 1.085 & 92.030 \\\cline{2-3}
+% & 60.0120 & 6453.419  \\ \Xhline{1pt}
+% \multirow{ 2}{*}{\squintB} & 1.024 & 26.194\\\cline{2-3}
+%  & 60.009 & 1474.809\\ \hline
+% \end{tabular}
+% \caption{Testing time of the algorithms on the simulated data}
+% \label{tbl:GDTestingTime}
+% \end{table}
+
+% \begin{table}[htbp]
+% \centering
+% \begin{tabular}{|c|c|c|}
+% \hline
+% Algorithm & Execution time (s) & Testing time (s)  \\ \hhline{|=|=|=|}
+% \multirow{ 2}{*}{\adaB} & 1.167 & 24.160 \\\cline{2-3}
+% & 60.192 & 1038.695  \\ \Xhline{1pt}
+% \multirow{ 2}{*}{\NHB} & 1.085 & 38.211 \\\cline{2-3}
+% & 60.0120 & 1829.719  \\ \Xhline{1pt}
+% \multirow{ 2}{*}{\squintB} & 1.024 & 47.742\\\cline{2-3}
+%  & 60.009 & 1870.409\\ \hline
+% \end{tabular}
+% \caption{Testing time of the algorithms on the a9a data}
+% \label{tbl:SVMTestingTime}
+% \end{table}
+% \FloatBarrier
  
-\section{Conclusion and Future Work} 
+\chapter{Conclusion and Future Work} 
 \label{sec:Concl}
 
-In this thesis we compared the practical performance of the three algorithms \adaB, \NHB and \squintB. We are sadly not able to say that \squintB out performs the previous two algorithms. We used both a simulated dataset and a well known observed dataset to compare the algorithms. In the setting of an equal number of iterations \NHB came out the best with both the lowest error rate and the least inconclusive tests (where applicable). In the timed tests \NHB still performed best but we saw evidence that suggested that \squintB might have performed better on different datasets with a lot more features. We also illustrated a possible problem with boosting. Namely that it might be possible that the data has a few obvious criteria which work fairly well but is very difficult to improve beyond those initial criteria, a property we called the low hanging fruit property, boosting might not be able to improve beyond a certain point while still increasing computation time in both the training and the predicting phase. 
+In this thesis we compared the practical performance of the three algorithms \adaB, \NHB and \squintB. We are not able to say that \squintB out performs the previous two algorithms. We used both a simulated dataset and a well known observed dataset to compare the algorithms. In the setting of an equal number of iterations \NHB came out the best with both the lowest error rate and the least inconclusive tests (where applicable). In the timed tests \NHB still performed best but we saw evidence that suggested that \squintB might have performed better on different datasets with a lot more features. We also illustrated a possible problem with boosting. Namely that it might be possible that the data has a few obvious criteria which work fairly well but is very difficult to improve beyond those initial criteria, a property we called the low hanging fruit property, boosting might not be able to improve beyond a certain point while still increasing computation time in both the training and the predicting phase. 
 
 \par Because of time constraints we were only able to compare the algorithms on two data sets. Future work could include the testing over a broader range of data, with both small and large shapes, that may or may not have the  and for longer times. Furthermore it could try to devise certain tests to determine whether the data to be used is conducive to boosting. One of the problems \squintB and \NHB encounter is the problem of tied committees, so further work could include a search to break the ties in a meaningful way to potentially improve the accuracy of the algorithms, and to see if this indeed works. 

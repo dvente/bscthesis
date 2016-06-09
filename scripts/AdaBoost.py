@@ -82,6 +82,7 @@ parser = argparse.ArgumentParser(description='AdaBoost trainer')
 parser.add_argument('trails', metavar = 'T', type = int, help='Number of trails to train AdaBoost with')
 parser.add_argument('--trainData', default = "../generated/AdaTrain.dat",help="location of the training data")
 parser.add_argument("--testData", default = "../generated/AdaTest.dat", help = "location of the test data" )
+parser.add_argument("--log", help="log answer to file instead of returning" )
 parser.add_argument("-v", "--verbose", help="display number of traing and test cases aswell", action="store_true")
 
 args = parser.parse_args()
@@ -96,8 +97,12 @@ for t in range(0,len(testLabel)):
 	if(ans != testLabel[t]):
 		boostErr += 1
 
-if(args.verbose):
-	print(a.N, len(testVec), args.trails, boostErr/len(testVec) )
+# if(args.verbose):
+# 	print(a.N, len(testVec), args.trails, boostErr/len(testVec) )
+# else:
+if(args.log):
+	with open(args.log,'a') as file:
+		file.write(str(a.T) + " " + str(boostErr/len(testLabel)) + " 0.0 0.0 \n")
 else:
 	print( a.T, boostErr/len(testLabel), 0.0, 0.0) 	
 

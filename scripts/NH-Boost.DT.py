@@ -15,6 +15,7 @@ parser.add_argument('trails', metavar = 'T', type = int, help='Number of trails 
 parser.add_argument('--trainData', default = "../generated/DTtrain.dat",help="location of the training data")
 parser.add_argument("--testData", default = "../generated/DTtest.dat", help = "location of the test data" )
 parser.add_argument("-c", "--clean", action = "store_true", help="generate new data files before executing")
+parser.add_argument("--log", help="log answer to file instead of returning" )
 
 args = parser.parse_args()
 
@@ -110,4 +111,8 @@ for t in range(0,len(testLabel)):
 	elif(ans != testLabel[t]):
 		boostErr += 1
 
-print( args.trails, boostErr/len(testLabel), incl/len(testLabel),(len(a.p)-np.count_nonzero(a.p))/len(a.p) )	
+if(args.log):
+	with open(args.log,'a') as file:
+		file.write(str(args.trails)+ " " + str(boostErr/len(testLabel))+ " " + str(incl/len(testLabel)) + " " + str((len(a.p)-np.count_nonzero(a.p))/len(a.p)) + "\n")
+else:
+	print( args.trails, boostErr/len(testLabel), incl/len(testLabel),(len(a.p)-np.count_nonzero(a.p))/len(a.p) )	
