@@ -4,6 +4,8 @@ from sklearn.tree import DecisionTreeClassifier
 import argparse
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_svmlight_file
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 def isDist(array):
@@ -29,10 +31,10 @@ def readData(file):
 class AdaBoost:
 	def __init__(self, T, data, dataDist):
 		self.T = T 
-		#self.vec, self.label = readData(data)
-		self.vec, self.label = load_svmlight_file("a9a0")
-		# self.vec = np.array(self.vec)
-		# self.label = np.array(self.label)
+		self.vec, self.label = readData(data)
+		#self.vec, self.label = load_svmlight_file("a9a0")
+		self.vec = np.array(self.vec)
+		self.label = np.array(self.label)
 		self.N = self.vec.shape[0]
 		self.w = np.array(dataDist(self.N))
 		self.p = np.array(self.w/sum(self.w))
@@ -52,7 +54,7 @@ class AdaBoost:
 				print(sum(self.p))
 				raise ValueError("Non distribution found")
 				
-			self.weakLearn[t].fit(self.vec, self.label.reshape(-1,1), sample_weight=self.p)#fit weakLearn with dist
+			self.weakLearn[t].fit(self.vec, self.label, sample_weight=self.p)#fit weakLearn with dist
 
 			self.err = sum(np.multiply(self.p,abs(self.weakLearn[t].predict(self.vec)-self.label)))#calc err on training set
 
@@ -90,8 +92,8 @@ args = parser.parse_args()
 boostErr = 0
 a = AdaBoost(args.trails, args.trainData, uniformDist)
 a.fit()
-
-testVec, testLabel = load_svmlight_file("a9a0.t")
+# print("done fitting")
+testVec, testLabel = readData(args.testData)  #load_svmlight_file("a9a0.t")
 for t in range(0,len(testLabel)):
 	ans = a.predict(testVec[t])
 	if(ans != testLabel[t]):

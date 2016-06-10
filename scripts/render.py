@@ -9,6 +9,8 @@ import argparse
 algoDict = {'a' : "AdaBoost", 'n': "NH-Boost.DT", 's':"SquintBoost", 't': "TimSquintBoost"}
 dataDict = {'a' : "Ada", 'n': "NH", 's':"SQ", 't': "SQ"}
 parser = argparse.ArgumentParser(description='Test an algorithm and plot error as function of number of iterations')
+#parser.add_argument('--trainData', default = "../generated/train.dat",help="location of the training data")
+#parser.add_argument("--testData", default = "../generated/test.dat", help = "location of the test data" )
 parser.add_argument("--results", default = "../generated/data.dat", help = "location to store the calculated data for later use" )
 parser.add_argument("-n", "--notify", help="notify phone when done", action="store_true")
 parser.add_argument("-r", "--range", type = int, default = 100, help="Range to test algorithm on")
@@ -59,7 +61,7 @@ if __name__ == '__main__':
 		subprocess.call(["python3.5 generate.py " + str(M) + " " + testData+ " -l 1" ], shell=True)
 
 	pool = multiprocessing.Pool(None)
-	tasks = range(1,args.range)
+	tasks = range(250,args.range)
 	results = []
 	r = pool.map_async(work, tasks)
 	r.wait() # Wait on the results

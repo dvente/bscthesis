@@ -75,7 +75,7 @@ else:
 plt.axhline(y=float(stumpAns[1]), xmin = 0, xmax = 1, hold = None, ls = 'dashed', color='black')
 plt.axhline(y=float(treeAns[1]), xmin = 0, xmax = 1, hold = None, ls = 'dashed', color ='black')
 plt.text(len(err)//2,float(treeAns[1])+0.001,'Decision tree with ' + treeAns[0] + ' nodes',color='black')
-plt.text(len(err)//5,float(stumpAns[1])+0.001,'Decision stump',color='black')
+plt.text(len(err)//7,float(stumpAns[1])+0.001,'Decision stump',color='black')
 
 
 plt.xlabel('T')
@@ -92,6 +92,8 @@ if args.algo != "AdaBoost":
 	plt.legend()
 plt.grid()
 plt.axis([0,len(bins),0,0.5])
+plt.xticks(np.arange(0, 500, 50))
+plt.yticks(np.arange(0, 0.5, 0.05))
 plt.savefig("../generated/" + args.title + ".png")
 
 if(args.show):

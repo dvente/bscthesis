@@ -55,7 +55,7 @@ def readData(file):
 class SquintBoost:
 	def __init__(self, T, data):
 		self.T = T + 1
-		self.vec, self.label = load_svmlight_file("a9a") #readData(data)
+		self.vec, self.label = load_svmlight_file("a9a")
 		# self.vec = np.array(self.vec)
 		# self.label = np.array(self.label)#.reshape(-1,1)
 		self.N = len(self.label)
@@ -109,7 +109,7 @@ incl = 0
 a = SquintBoost(args.trails, args.trainData)
 a.fit()
 #print("so far so good")
-testVec, testLabel = load_svmlight_file("a9a.t")#readData(args.testData)
+testVec, testLabel = load_svmlight_file("a9a.t") #readData(args.testData)
 # print(a.vec.shape)
 # testVec = np.array(testVec)
 # testLabel = np.array(testLabel)

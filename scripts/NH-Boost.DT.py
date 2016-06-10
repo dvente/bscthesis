@@ -52,7 +52,7 @@ testLabel = np.array(testLabel)
 class NHBoostDT:
 	def __init__(self, T, data):
 		self.T = T + 1
-		self.vec, self.label = load_svmlight_file("a9a")#readData(data)
+		self.vec, self.label = load_svmlight_file("a9a")
 		# self.vec = np.array(self.vec)
 		# self.label = np.array(self.label)
 		self.N = self.vec.shape[0]
