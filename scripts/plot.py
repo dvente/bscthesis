@@ -27,8 +27,8 @@ parser.add_argument('-s', '--show', action="store_true")
 args = parser.parse_args()
 
 if not args.svm:
-	testData = "../generated/" + algoDict[args.algo] + "Test.dat"
-	trainData = "../generated/" + algoDict[args.algo] + "Train.dat"
+	testData = "../data/" + algoDict[args.algo] + "Test.dat"
+	trainData = "../data/" + algoDict[args.algo] + "Train.dat"
 	dataSet = "simulated "
 else:
 	dataSet = "a9a "

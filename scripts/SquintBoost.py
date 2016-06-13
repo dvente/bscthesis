@@ -12,12 +12,10 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 parser = argparse.ArgumentParser(description='SquintBoost trainer')
 parser.add_argument('trails', metavar = 'T', type = int, help='Number of trails to train NHBoostDT with')
-parser.add_argument('--trainData', default = "generated/SQtrain.dat",help="location of the training data")
-parser.add_argument("--testData", default = "generated/SQtest.dat", help = "location of the test data" )
+parser.add_argument('--trainData', default = "../data/SQtrain.dat",help="location of the training data")
+parser.add_argument("--testData", default = "../data/SQtest.dat", help = "location of the test data" )
 parser.add_argument("-c", "--clean", action = "store_true", help="generate new data files before executing")
 parser.add_argument("--log", help="log answer to file instead of returning" )
-
-
 args = parser.parse_args()
 
 def isDist(array):

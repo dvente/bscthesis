@@ -1,4 +1,3 @@
-#!/usr/bin/python3.4
 import numpy as np
 import sys
 from sklearn.tree import DecisionTreeClassifier
@@ -8,11 +7,10 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 def isDist(array):
-	return (sum(list(map(lambda x: x<0,array)))==0 and np.isclose(sum(array),1.0))
+	return (np.all(array>0) and np.isclose(sum(array),1.0))
 
 def uniformDist(N):
-	w = [float(1/N) for i in range(0,N)]
-	return w
+	return np.array([float(1/N) for i in range(0,N)])
 
 def readData(file):
 	vec = []
@@ -35,7 +33,6 @@ parser.add_argument('--svm', action="store_true")
 parser.add_argument('--trainData', default = "../generated/train.dat",help="location of the training data")
 parser.add_argument("--testData", default = "../generated/test.dat", help = "location of the test data" )
 parser.add_argument("-v", "--verbose", help="display number of traing and test cases aswell", action="store_true")
-
 args = parser.parse_args()
 
 boostErr = 0
