@@ -1,4 +1,4 @@
 thesis*
 *.aux
 !*.tex
-generated/
+back.gitignore
