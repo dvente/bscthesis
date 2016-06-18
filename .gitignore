@@ -1,14 +1,4 @@
-thesis.aux
-thesis.blg
-thesis.bbl
-thesis.fdb_latexmk
-thesis.fls
-thesis.log
-thesis.pdf
-thesis.synctex.gz
-thesis.toc
-thesis.bbl
-thesis.tdo
+thesis*
 *.aux
-*.log
-scripts/spyder/*
+!*.tex
+back.gitignore

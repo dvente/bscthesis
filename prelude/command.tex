@@ -8,7 +8,6 @@
 \usepackage{amsfonts}
 \usepackage{verbatim}
 \usepackage{float}
-%\usepackage{titlesec}
 \usepackage{color}
 \usepackage[toc]{appendix}
 \usepackage{xspace}
@@ -19,14 +18,12 @@
 \usepackage{hhline}
 \usepackage{makecell}
 \usepackage{placeins}
-%\usepackage{biblatex}
 \usepackage{url}
-% \setcounter{biburllcpenalty}{7000}
-% \setcounter{biburlucpenalty}{8000}
+\usepackage{datetime}
 
+\newdateformat{monthyeardate}{\monthname[\THEMONTH] \THEDAY, \THEYEAR}
 \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
 \newcommand*{\graphWidth}{0.8\textwidth}
-
 \newcommand{\hedge}{\textbf{Hedge}\xspace}
 \newcommand{\adaB}{\textbf{AdaBoost}\xspace}
 \newcommand{\adaN}{\textbf{NormalHedge.DT}\xspace}
@@ -48,7 +45,3 @@
 \renewcommand{\Vec}[1]{
   \begin{pmatrix}#1\end{pmatrix}
 }
-%\renewcommand{\ln}{\log}
-\usepackage{datetime}
-\newdateformat{monthyeardate}{%
-  \monthname[\THEMONTH] \THEDAY, \THEYEAR}
