@@ -27,7 +27,7 @@ The generalization error refers to the error on a set of examples which have the
 
 \subsection{Boosting}
 \label{subsec:boosting}
-Recall that the goal of boosting is to take a simple weak learner that only performs slightly better than random guessing and repeatedly assigning weights to the examples so that after training, several instances of the weak learner we get a committee which has a significantly better performance than the original learner.
+Recall that the goal of boosting is to take a simple weak learner that only performs slightly better than random guessing and repeatedly assign weights to the examples so that after training, several instances of the weak learner will form a committee which has a significantly better performance than the original learner.
 This leads to the following formal setting: we require a set of labelled training data and a weak learning algorithm $\weak$. Often a boosting algorithm can also accept a distribution on the training data to exploit any prior knowledge one might have, which is set to the uniform distribution if no extra knowledge is provided. The procedure at each iteration is to fit \weak to the training data which provides us with an hypothesis $h^t:\mathcal X \to \mathcal Y$. Using this hypothesis we will calculate a loss vector $\Bell^t$. This loss vector is a measure for how well $\weak$ performed on the training data and is usually some form of the training error. For example $\adaB$ uses the weighted error $\vec p^t\cdot\Bell^t$ whereas \NHB also uses a measure called the margin and its distribution, which we will define in section \ref{subsec:NHAlgo}. Using this loss vector we will slightly alter the training set by attaching weights, which measure the relative importance of the examples, and then repeat the process. Our final hypothesis will then be some weighted majority vote among all of the hypotheses. 
 
 \section{\adaB}
@@ -48,10 +48,10 @@ This leads to the following formal setting: we require a set of labelled trainin
 	\State Set $$\bf p^t= \frac{\bf w^t}{\sum_{i=1}^N w^t_i}$$
 	\State Call \weak($\bf p^t$) and receive hypothesis $h^t:\mathcal X\to\mathcal Y$
 	\State Calculate the error of $h^t:\ve^t=\sum^N_{i=1}p^t_i|h^t(\mathbf x_i)-y_i|$\label{algStep:adaErr}
-	\State Set $\b_t=\ve^t/(1-\ve^t)$
-	\State Update the weights $$w_i^{t+1}=w_i^t\beta^{1-|h^t(\vec x_i)-y_i|}_t$$
+	\State Set $\b^t=\ve^t/(1-\ve^t)$
+	\State Update the weights $$w_i^{t+1}=w_i^t(\beta^t)^{1-|h^t(\vec x_i)-y_i|}$$
 	\EndFor\\
-	\Return $$h_f(\mathbf x)=\begin{cases}1 & \text{if } \sum^T_{t=1}(\log1/\b_t)h^t(\mathbf x)\geq\frac12\sum^T_{t=1}\log1/\b_t\\0&\text{otherwise}\end{cases}$$
+	\Return $$h_f(\mathbf x)=\begin{cases}1 & \text{if } \sum^T_{t=1}(\log1/\b^t)h^t(\mathbf x)\geq\frac12\sum^T_{t=1}\log1/\b^t\\0&\text{otherwise}\end{cases}$$
 	\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
@@ -67,9 +67,9 @@ Observing the \hedge\cite{Freund1997} algorithm alongside \adaB, one can see, mo
 \label{subsec:AdaTheoPerf}
 Here we will discuss the theoretical performance of \adaB. One of the main results from \cite{Freund1997}, is the following theorem: 
 \begin{theorem}\label{thm:adaErr}\cite{Freund1997}
-Suppose \adaB runs for $T$ rounds calling the weak learning algorithm \weak which generates hypotheses with errors $\ve_1\ldots, \ve_T$ (as defined in step \ref{algStep:adaErr} in algorithm \ref{fig:adaCode}), then the training error $\ve:=\sum_{i=1}^ND(i)[h_f(x_i)\neq y_i]$ of the final hypothesis $h_f$ output by \adaB is bounded above by $$\ve\leq 2^T\prod^T_{t=1}\sqrt{\ve_t(1-\ve_t)}$$
+Suppose \adaB runs for $T$ rounds calling the weak learning algorithm \weak which generates hypotheses with errors $\ve^1\ldots, \ve^T$ (as defined in step \ref{algStep:adaErr} in algorithm \ref{fig:adaCode}), then the training error $\ve:=\sum_{i=1}^ND(i)[h_f(x_i)\neq y_i]$ of the final hypothesis $h_f$ output by \adaB is bounded above by $$\ve\leq 2^T\prod^T_{t=1}\sqrt{\ve^t(1-\ve^t)}$$
 \end{theorem}
-We will omit the proof, since it is not the focus of this thesis but we will briefly discuss its consequences. As discussed above one might find it strange that every hypothesis is allowed a vote in the final hypothesis. This is still, however, an improvement over previous algorithms since the final error will now depend on the error of all hypotheses instead of only the worst, as was the case in previous works. It is also not immediately obvious that this upper bound does us any good since it contains exponents and products for which it is not immediately apparent how they cancel out. In their paper \cite{Freund1997}, Freund and Shapire show the above stated upper bound implies to the following upper bound: $$\ve\leq \exp\left(-2\sum^T_{t=1}\gamma_t^2\right)$$ where the $\gamma_t$ is defined such that $\ve_t=1/2-\gamma_t$ holds. This upper bound is more useful since it decreases exponentially, leading us to conclude that \adaB has a good theoretical performance.   
+We will omit the proof, since it is not the focus of this thesis but we will briefly discuss its consequences. As discussed above one might find it strange that every hypothesis is allowed a vote in the final hypothesis. This is still, however, an improvement over previous algorithms since the final error will now depend on the error of all hypotheses instead of only the worst, as was the case in previous works. It is also not immediately obvious that this upper bound does us any good since it contains exponents and products for which it is not immediately apparent how they cancel out. In their paper \cite{Freund1997}, Freund and Shapire show the above stated upper bound implies the following: $$\ve\leq \exp\left(-2\sum^T_{t=1}(\gamma^t)^2\right)$$ where the $\gamma^t$ is defined such that $\ve^t=1/2-\gamma^t$ holds. This upper bound is more useful since it decreases exponentially, leading us to conclude that \adaB has a good theoretical performance.   
 
 
 \section{\NHB}
@@ -107,7 +107,8 @@ Again \NHB uses several instances of \weak, which are all expected to have \text
 
  We will again omit the proof but briefly discuss its consequences here. Firstly it is useful to observe that the training error of \NHB is comparable to that of \adaB. However, instead of looking only at the training error and trying to generalize that to the generalization error, Luo and Schapiere also make statements with respect to the margin distribution which is a measure of confidence often used in classification settings. The margin of an example $(\vec x , y)$ with respect to some weak learner is defined as $\frac1T \sum^T_{t=1}yh^t(x)$ i.e. the difference between the fractions of correct and incorrect hypotheses of the example. Here its magnitude measures the confidence of the committee and its sign measures whether or not the weak learner was correct. In this light the above theorem also states that the fraction of training examples the algorithm deems important enough also decreases exponentially and thus it ignores many of the examples every round, making it much more computationally efficient.
 
- \par As we discussed before \adaB uses \hedge as a subroutine. Similarly \NHB uses \adaN as a subroutine by feeding it a loss vector which is based on the margins of the hypothesis of the previous rounds. So, in essence the main difference between \NHB and \adaB is that they use different hedging algorithms as subroutines but the overall (boosting) framework remains the same. This also illustrates that the performance of the boosting algorithms largely depends on the performance of the hedging algorithms that they depend on. Since \hedge and \adaN have similar performances, so do \adaB and \NHB as we will see in chapter \ref{chap:pracPerf}.
+ \par As we discussed before \adaB uses \hedge as a subroutine. Similarly \NHB uses \adaN as a subroutine by feeding it a loss vector which is based on the margins of the hypothesis of the previous rounds. So, in essence the main difference between \NHB and \adaB is that they use different hedging algorithms as subroutines but the overall (boosting) framework remains the same.
+ % This also illustrates that the performance of the boosting algorithms largely depends on the performance of the hedging algorithms that they depend on. Since \hedge and \adaN have similar performances, so do \adaB and \NHB as we will see in chapter \ref{chap:pracPerf}.
 
 
 \section{\squintB}
@@ -117,7 +118,7 @@ Unlike the previous sections, here we will first take a more careful look at \sq
 \subsection{\squint and second order quantile bounds}
 \label{subsec:squint}
 In their paper \cite{Freund1997} Freund and Shapire proved  that \hedge can achieve $$R^T_i < \sqrt{T \ln N}\qquad \text{ for each expert } i.$$ While this is a reasonable worst-case performance, one can ask if we can do better in the common case. Furthermore aside from the performance, the algorithm has another major drawback. Namely that the bound increases if one adds experts, even ones that perform well. So even when one adds experts that perform well and one cannot eliminate other experts that do not, the theoretical performance of \hedge still decreases. 
-In answer to these problems two lines of research were started. The first one attempted to develop algorithms which perform well with respect to a so called \textit{quantile bound}, i.e. a bound on the regret that considers a subset of experts instead of just one. The second line of research attempted to improve the bounds' dependence on $T$ to a dependence of some form of cumulative variance (or some related second-order quantity) which is shown to be often significantly smaller than $T$. 
+In answer to these problems two lines of research were started. The first one attempted to develop algorithms which perform well with respect to a so called \textit{quantile bound}, i.e. a bound on the regret that considers a subset of experts instead of just one. The second line of research attempted to improve the bounds' dependence on $T$ to a dependence of some form of cumulative variance (or some related second-order quantity) which is often significantly smaller than $T$. 
 
 \par In response to this research Koolen and Van Erven introduced \squint\cite{Koolen2015} (for Second order quantile integral). They bring several versions of the algorithm froward which use different priors on the experts, but the best results came from the use of an improper prior. Using this prior \squint achieves both a quantile bound and a variance guarantee and we will use this version throughout the thesis.
 %This algorithm puts a prior, called $\pi$, on the experts and achieves both a quantile bounds and a variance guarantee. 
@@ -147,7 +148,7 @@ Plugging \squint into the boosting framework yields \squintB which can be found 
 \Procedure{\squintB}{}
 \State \textbf{Initialize} $\mathbf{R^0,V^0,r^0} = \mathbf 0$
 \For {$t= 1,2,\ldots,T$}
-\State Set: $\mathbf p^t \propto \pi(i) \frac{\sqrt{\pi}e^{\frac{(R^t_i)^2}{4V^t_i}}\lubke{\erf\lubke{\frac{R^t_i}{2\sqrt{V_i^t}}}-\erf\lubke{\frac{R_i^t-V_i^t}{2\sqrt{V_i^t}}}}}{2\sqrt{V_i^t}} $ 
+\State Set: $ p_i^t \propto \pi(i) \frac{\sqrt{\pi}e^{\frac{(R^t_i)^2}{4V^t_i}}\lubke{\erf\lubke{\frac{R^t_i}{2\sqrt{V_i^t}}}-\erf\lubke{\frac{R_i^t-V_i^t}{2\sqrt{V_i^t}}}}}{2\sqrt{V_i^t}} $ 
 \State Call $\weak(\mathbf p^t)$ and get hypothesis $h^t$ with edge $\gamma^t = \sum_{i=1}^N p^t_ih^t(\mathbf x_i)y_i$
 \State Set: $r_i^t=\frac12h^t(\mathbf x_i)y_i-\gamma^t$ 
 \State Set: $R_i^t = R_i^{t-1} + r_i^t $ 
