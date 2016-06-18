@@ -37,7 +37,7 @@ args = parser.parse_args()
 
 boostErr = 0
 if args.svm:
-	vec, label = load_svmlight_file("a9a")
+	vec, label = load_svmlight_file("../data/a9a")
 else:
 	vec, label = readData(args.trainData)
 	vec = np.array(vec)
@@ -52,7 +52,7 @@ else:
 a.fit(vec,label)
 
 if args.svm:
-	testVec, testLabel = load_svmlight_file("a9a.t")
+	testVec, testLabel = load_svmlight_file("../data/a9a.t")
 else:
 	testVec, testLabel = readData(args.testData);
 	testVec = np.array(testVec)

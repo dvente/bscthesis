@@ -21,7 +21,7 @@ algoDict = {"AdaBoost" : "Ada", "NH-Boost.DT" : "NH", "SquintBoost": "SQ"}
 parser = argparse.ArgumentParser(description='Plot data from a four column .csv or .log file')
 parser.add_argument('algo', help="Name of the algorithm")
 parser.add_argument('file', help='location of the data to plot')
-parser.add_argument('title', help="Location to store the plot")
+parser.add_argument('filename', help="Location to store the plot")
 parser.add_argument('--svm', action="store_true")
 parser.add_argument('-s', '--show', action="store_true")
 args = parser.parse_args()
@@ -29,9 +29,6 @@ args = parser.parse_args()
 if not args.svm:
 	testData = "../data/" + algoDict[args.algo] + "Test.dat"
 	trainData = "../data/" + algoDict[args.algo] + "Train.dat"
-	dataSet = "simulated "
-else:
-	dataSet = "a9a "
 
 bins = []
 err = []
@@ -80,7 +77,7 @@ plt.text(len(err)//7,float(stumpAns[1])+0.001,'Decision stump',color='black')
 
 plt.xlabel('T')
 plt.ylabel('Generalization Error')
-plt.title("Plot of " + args.algo + " error with the " + dataSet + "data set: $N="+ str(N) + "$, $M=" + str(M) +"$")
+#plt.title("Plot of " + args.algo + " error with the " + dataSet + "data set: $N="+ str(N) + "$, $M=" + str(M) +"$")
 plt.subplots_adjust(left = 0.15)
 
 plt.plot(bins, err, color='r', label="Generalization error (%)")
@@ -94,7 +91,7 @@ plt.grid()
 plt.axis([0,len(bins),0,0.5])
 plt.xticks(np.arange(0, 500, 50))
 plt.yticks(np.arange(0, 0.5, 0.05))
-plt.savefig("../generated/" + args.title + ".png")
+plt.savefig("../generated/" + args.filename + ".png")
 
 if(args.show):
 	plt.show()
