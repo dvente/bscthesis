@@ -1,126 +1,126 @@
 import numpy as np
-from sklearn.tree import DecisionTreeClassifier
-from stump import DecisionStump
 import argparse
 import squint
-import subprocess
-import matplotlib.pyplot as plt
+
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.datasets import load_svmlight_file
-import warnings
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-
-
-parser = argparse.ArgumentParser(description='SquintBoost trainer')
-parser.add_argument('trails', metavar = 'T', type = int, help='Number of trails to train NHBoostDT with')
-parser.add_argument('--trainData', default = "../data/SQtrain.dat",help="location of the training data")
-parser.add_argument("--testData", default = "../data/SQtest.dat", help = "location of the test data" )
-parser.add_argument("-c", "--clean", action = "store_true", help="generate new data files before executing")
-parser.add_argument("--log", help="log answer to file instead of returning" )
-args = parser.parse_args()
 
 def isDist(array):
-	return (sum(list(map(lambda x: x<0,array)))==0 and np.isclose(sum(array),1.0))
+    return (np.all(array>=0) and np.isclose(sum(array),1.0))
 
-def uniformDist(N):
-	return  [float(1/N) for i in range(0,N)]
-
-def neg(s):
-	return min(0,s)
-
-vNeg = np.vectorize(neg)
 vecEvidence = np.vectorize(squint.lnevidence)
-	
-def readData(file):
-	vec = []
-	label = []
-	f = open(file,'r')
-	for line in f:
-		line = line.rstrip()
-		array = line.split(" ")
-		if(len(array) == 1): #skip header row
-			continue
-		vec.append(list(map(float, array[:-1])))
-		label.append(int(array[-1]))
 
-	return (vec,label)
+class SquintBoostClassifier:
+    def __init__(self, T):
+        self.T = T + 1
+        self.weakLearn = np.array(
+                [DecisionTreeClassifier(max_depth = 1) 
+                for i in range(0,self.T)])
 
+    def fit(self, X, y):
 
+        if len(np.unique(y)) is not 2:
+            raise ValueError(
+                    """"Too many labels detected, this implementation only 
+                        handles binary classification 
+                    """)
+        else:
+        #The algorithm depends on labels being -1 and 1 so make a dummy list
+        # with the right labels. 
+            self.maxLabel = max(y)
+            self.minLabel = min(y)
+            Y = y
+            Y[Y == self.maxLabel] = 1
+            Y[Y == self.minLabel] = -1
 
-# testVec, testLabel = load_svmlight_file("a9a")
-# testVec = np.array(testVec)
-# testLabel = np.array(testLabel)
+        R = np.zeros(X.shape[0])
+        V = np.zeros(X.shape[0])
 
-class SquintBoost:
-	def __init__(self, T, data):
-		self.T = T + 1
-		self.vec, self.label = load_svmlight_file("a9a")
-		# self.vec = np.array(self.vec)
-		# self.label = np.array(self.label)#.reshape(-1,1)
-		self.N = len(self.label)
-		self.p = np.array(self.N)
-		self.weakLearn = np.array([DecisionTreeClassifier(max_depth = 1) for i in range(0,self.T)])
-		#self.weakLearn = np.array([DecisionStump() for i in range(0,self.T)])
-		self.R = np.zeros((self.T,self.N))
-		self.V = np.zeros((self.T,self.N))
-		self.lnpi = np.log(np.array(uniformDist(self.N)))
-		self.trainError = np.zeros((self.T,self.N))
+        for t in range(1,self.T):
+            lw = vecEvidence(R, V)
+            w = np.exp(lw)
+            p = w / sum(w) 
 
-	def fit(self):
-		R = np.zeros(self.N)
-		V = np.zeros(self.N)
-		for t in range(1,self.T):
-			lw = vecEvidence(R, V)
-			w = np.exp(lw)
-			self.p = w / sum(w) 
-
-			self.weakLearn[t].fit(self.vec, self.label, sample_weight = self.p)
-			margins = self.weakLearn[t].predict(self.vec)*self.label
-			gamma = np.sum(self.p*self.weakLearn[t].predict(self.vec)*self.label)
-			r = 0.5*(gamma-margins) 
-			#print(margins.shape)
-			#vectorbased update
-			R = R + r
-			V = V + np.square(r)
+            self.weakLearn[t].fit(X, y, sample_weight=p)
+            margins = self.weakLearn[t].predict(X)*y
+            gamma = np.sum(p*self.weakLearn[t].predict(X)*y)
+            r = 0.5*(gamma-margins) 
+            R = R + r
+            V = V + np.square(r)
 
 
 
-	def predict(self,vec):
-		predict = [self.weakLearn[t].predict(vec) for t in range(1,self.T)]
-		ans = sum(predict)
-		return np.sign(ans)
+    def predict(self, X):
+        ans = np.sign(sum([self.weakLearn[t].predict(X) 
+                            for t in range(1,self.T)]))
+        if ans == [1]:
+            return self.maxLabel
+        elif ans == [-1]:
+            return self.minLabel
+        else:
+            return float('Inf')
 
-if(args.clean):
-	with open(args.trainData, 'r') as f:
-		first_line = f.readline()
-	
-	N = int(first_line.rstrip())
-	
-	with open(args.testData, 'r') as f:
-		first_line = f.readline()
+parser = argparse.ArgumentParser(
+            description="""This program uses Squint-Boost to (binary) classify 
+                        the test data based upon the provided training data and 
+                        reports the number of iterations and the error rate in
+                        the following format:
 
-	M = int(first_line.rstrip())
-	subprocess.call(["python generate.py " + str(N) + " " + args.trainData + " -l 1" ], shell=True)
-	subprocess.call(["python generate.py " + str(M) + " " + args.testData+ " -l 1" ], shell=True)
+                        Trails error inconclusive 0.0.
+                        
+                        All outputs except the trails are percentages. 
+                        The trailing 0 is added for consistency with 
+                        the other two algorithms used when plotting. 
+                        Author: Daniel Vente <danvente@gmail.com> June 2016""",
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("trails", type = int, 
+                    help="Number of trails with which to train Squint-Boost.")
+parser.add_argument("--trainData", default = "../data/SQTrain.dat", 
+                    help="Location of the training data.")
+parser.add_argument("--testData", default = "../data/SQTest.dat", 
+                    help = "Location of the test data.")
+parser.add_argument("--log", help="Store answer to file instead of printing" )
+parser.add_argument("-v", "--verbose", action="store_true", 
+                    help="Increase verbosity to improve readability (for humans)" )
+args = parser.parse_args()
 
-boostErr = 0
-incl = 0
-a = SquintBoost(args.trails, args.trainData)
-a.fit()
-#print("so far so good")
-testVec, testLabel = load_svmlight_file("a9a.t") #readData(args.testData)
-# print(a.vec.shape)
-# testVec = np.array(testVec)
-# testLabel = np.array(testLabel)
-for t in range(0,len(testLabel)):
-	ans = a.predict(testVec[t])
-	if(ans == [0]):
-		incl += 1
-		boostErr += 0.5
-	elif(ans != testLabel[t]):
-		boostErr += 1
+s = SquintBoostClassifier(args.trails)
 
-if(args.log):
-	with open(args.log,'a') as file:
-		file.write(str(args.trails)+ " " + str(boostErr/len(testLabel))+ " " + str(incl/len(testLabel)) + " " + str((len(a.p)-np.count_nonzero(a.p))/len(a.p)) + "\n")
+X, y = load_svmlight_file(args.trainData)
+testX, testY = load_svmlight_file(args.testData)
+
+if X.shape[0] != y.shape[0]:
+    raise ValueError("X has %d examples instead of %d like y", 
+                        X.shape[0], y.shape[0])
+
+if testX.shape[0] != testY.shape[0]:
+    raise ValueError("testX has %d examples instead of %d like testY", 
+                        testX.shape[0], testY.shape[0])
+
+s.fit(X,y)
+ansArr = np.array([s.predict(testX[i]) for i in range(testX.shape[0])])
+boostErr, incl = 0, 0
+
+for t in range(testX.shape[0]):
+    if(ansArr[t] == float('Inf')):
+        incl += 1
+        boostErr += 0.5
+    elif(ansArr[t] != testY[t]):
+        boostErr += 1  
+
+if args.verbose is False:
+    output = "{0} {1} {2} 0.0\n".format(
+            args.trails,
+            boostErr/testX.shape[0],
+            incl/testX.shape[0])
 else:
-	print( args.trails, boostErr/len(testLabel), incl/len(testLabel),(len(a.p)-np.count_nonzero(a.p))/len(a.p) )	
+    output = "Trails: {0}\nError(%): {1}\nInconclusive(%): {2}\nZeros(%): 0.0\n".format(
+            args.trails,
+            boostErr/testX.shape[0],
+            incl/testX.shape[0])
+
+if args.log is not None:
+    with open(args.log,"a") as file:
+        file.write(output)
+else:
+    print(output)

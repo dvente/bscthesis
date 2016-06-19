@@ -1,4 +1,10 @@
 thesis*
 *.aux
 !*.tex
+!*.pdf
 generated/
+*.so
+*.pyc
+scripts/build/
+*.log
+*.cxx

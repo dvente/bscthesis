@@ -1,6 +1,6 @@
 %!TEX root = ../thesis.tex
 
-\chapter{The three boosting Algorithms}
+\chapter{The three boosting algorithms}
 \label{chap:prelim}
 \section{Settings}
 We will now provide a formal description of the settings used in this thesis.
@@ -117,12 +117,10 @@ Unlike the previous sections, here we will first take a more careful look at \sq
 
 \subsection{\squint and second order quantile bounds}
 \label{subsec:squint}
-In their paper \cite{Freund1997} Freund and Shapire proved  that \hedge can achieve $$R^T_i < \sqrt{T \ln N}\qquad \text{ for each expert } i.$$ While this is a reasonable worst-case performance, one can ask if we can do better in the common case. Furthermore aside from the performance, the algorithm has another major drawback. Namely that the bound increases if one adds experts, even ones that perform well. So even when one adds experts that perform well and one cannot eliminate other experts that do not, the theoretical performance of \hedge still decreases. 
-In answer to these problems two lines of research were started. The first one attempted to develop algorithms which perform well with respect to a so called \textit{quantile bound}, i.e. a bound on the regret that considers a subset of experts instead of just one. The second line of research attempted to improve the bounds' dependence on $T$ to a dependence of some form of cumulative variance (or some related second-order quantity) which is often significantly smaller than $T$. 
+In their paper \cite{Freund1997} Freund and Shapire proved  that \hedge can achieve $$R^T_i < \sqrt{T \ln N}\qquad \text{ for each expert } i.$$ While this is a reasonable worst-case performance, one can ask if we can do better in the common case. Furthermore, aside from the performance, the algorithm has another major drawback, namely that the bound increases if one adds experts, even ones that perform well. So, even when one adds experts that perform well and one cannot eliminate other experts that do not, the theoretical performance of \hedge still decreases. 
+In answer to this problem two lines of research were started. The first one attempted to develop algorithms which perform well with respect to a so called \textit{quantile bound}, i.e. a bound on the regret that considers a subset of experts instead of just one. The second line of research attempted to improve the bound's dependence on $T$ to a dependence of some form of cumulative variance (or some related second-order quantity) which is often significantly smaller than $T$. 
 
-\par In response to this research Koolen and Van Erven introduced \squint\cite{Koolen2015} (for Second order quantile integral). They bring several versions of the algorithm froward which use different priors on the experts, but the best results came from the use of an improper prior. Using this prior \squint achieves both a quantile bound and a variance guarantee and we will use this version throughout the thesis.
-%This algorithm puts a prior, called $\pi$, on the experts and achieves both a quantile bounds and a variance guarantee. 
-Using the notations $R^T_\mathcal{N} := \mathbb{E}_{\pi(i|\mathcal N)}R^T_i$ and  $V^T_\mathcal{N} := \mathbb{E}_{\pi(i|\mathcal N)}V^T_i$ to denote the average regret under the prior among the reference experts and the uncentered variance of the excess losses respectively with $V^T_i := \sum^T_{t=1}(r^t_i)^2$ and $\mathcal N$ denoting any subset of experts, they formulate the following theorem:
+\par In response to this research Koolen and Van Erven introduced \squint\cite{Koolen2015} (for second order quantile integral). They bring several versions of the algorithm forward which use different priors on the experts, but the best results came from the use of an improper prior. Using this prior \squint achieves both a quantile bound and a variance guarantee and we will use this version throughout the thesis. Using the notations $R^T_\mathcal{N} := \mathbb{E}_{\pi(i|\mathcal N)}R^T_i$ and  $V^T_\mathcal{N} := \mathbb{E}_{\pi(i|\mathcal N)}V^T_i$ to denote the average regret under the prior among the reference experts and the uncentred variance of the excess losses respectively with $V^T_i := \sum^T_{t=1}(r^t_i)^2$ and $\mathcal N$ denoting any subset of experts, they formulate the following theorem:
 
  \begin{theorem}\label{Thm:SquintPerf}\cite{Koolen2015}
  Let $\mathcal{N}$ be any subset of experts and let \squint run for $T$ rounds using the update rule
@@ -138,7 +136,7 @@ Using the notations $R^T_\mathcal{N} := \mathbb{E}_{\pi(i|\mathcal N)}R^T_i$ and
 \label{subsec:algoSquintB}
 Plugging \squint into the boosting framework yields \squintB which can be found in algorithm \ref{fig:squintBCode} below. Since not much is yet known about \squintB we will not go into great detail here, as we will examine it and its practical perfomance in chapter \ref{chap:pracPerf} and the theoretical performance is outside the scope of this thesis. A more in-depth theorectical comparison and exploration of the algorithms was performed by Otten in \cite{Otten2016}. 
 \begin{algorithm} 
-\caption{\NHB}
+\caption{\squintB}
 \label{fig:squintBCode}
 \begin{algorithmic}[1]
 \Require 
