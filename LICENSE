@@ -11,21 +11,3 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-"""
-setup.py file for squint SWIG
-"""
-
-from distutils.core import setup, Extension
-
-
-squint_module = Extension("_squint",
-                           sources=["squint_wrap.cxx", "squint.cpp"])
-
-setup(	name = "squint",
-		version = "1.0",
-		author      = "Daniel Vente",
-		author_email = "danvente@gmail.com",
-		description = """A python wrapper for the squint code.""",
-		ext_modules = [squint_module],
-		py_modules = ["squint"])
