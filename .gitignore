@@ -8,3 +8,4 @@ generated/
 scripts/build/
 *.log
 *.cxx
+*.dat
