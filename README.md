@@ -3,7 +3,7 @@
 This repository contains my thesis and the scripts used there in. 
 
 ##Abstract##
-Boosting algorithms are classification algorithms that take a ''weak learner'' (a learner that performs slightly better than random guessing) and attempt to improve its accuracy. In their paper Koolen and Van Erven developed  [Squint](http://jmlr.csail.mit.edu/proceedings/papers/v40/Koolen15a.pdf), a hedging algorithm, which can be used in the context of boosting to improve the accuracy of our weak learners. In this thesis we implement this algorithm in the constext of boosting as well as two previously known boosting algorithms to comapre their practical performance   
+Boosting algorithms are classification algorithms that take a ''weak learner'' (a learner that performs slightly better than random guessing) and attempt to improve its accuracy. In their paper Koolen and Van Erven developed  [Squint](http://jmlr.csail.mit.edu/proceedings/papers/v40/Koolen15a.pdf), a hedging algorithm, which can be used in the context of boosting to improve the accuracy of our weak learners. In this thesis we implement this algorithm in the constext of boosting as well as two previously known boosting algorithms to comapre their practical performance.   
 
 ## Requirements ##
 * The implementation is in Python 3, using the following libararies:
