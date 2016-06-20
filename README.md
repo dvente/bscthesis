@@ -32,3 +32,19 @@ The scripts can use any datafile writen in [svm light](http://scikit-learn.org/s
 If you wish to generate plots like in the thesis use `render.py`. The location flags can be left to their default. Run `python3 render.py -h` for more information.
 Note that this is very CPU intensive and can take a very long time with large data files. 
 
+## License ##
+ Copyright 2016 Daniel Vente
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of version 3 of the GNU General Public License as
+ published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+If you have any questions you can reach me at <danvente@gmail.com>
